@@ -5,9 +5,12 @@ const UploadFiles = require('../pageObjects/UploadFiles');
 const { click, selectOption, isChecked } = require('../fixtures/User interface');
 const { readExcel } = require('../TDD/ExcelReader');
 
+// Automates the Materials Info page by uploading a file, selecting material options, and saving.
 class MaterialsInfoFlow {
     static data = readExcel('MaterialsInfoFlow');
 
+    // Uploads a project file, selects material dropdowns (type, thickness, color, texture),
+    // picks a category, toggles "keep permanent", saves, and navigates to the next page.
     static async materialsInfoFlow(page, data) {
         const materialsInfo = new MaterialsInfo(page);
         const uploadFiles = new UploadFiles(page);
