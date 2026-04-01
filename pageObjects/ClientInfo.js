@@ -4,7 +4,7 @@ class ClientInfo {
      */
     constructor(page) {
         this.page = page;
-    }
+    } 
 
     newCustomer() {
         return this.page.locator("header > div > button.inline-flex");
