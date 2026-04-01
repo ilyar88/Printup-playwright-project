@@ -12,7 +12,7 @@ class MaterialsInfo {
     //Dropdown
     thickness() {
         return this.page.locator("input[type='number']");
-    }
+    } 
     //Dropdown
     color() {
         return this.page.locator("input[placeholder='בחר גוון...']");
