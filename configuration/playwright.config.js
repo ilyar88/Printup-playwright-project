@@ -3,6 +3,7 @@ const { defineConfig } = require('@playwright/test');
 
 const config = {
     baseUrl: process.env.URL,
+    applitoolsKey: process.env.APPLITOOLS_KEY,
     browser: {
         headless: false,
         slowMo: 300,
@@ -31,17 +32,20 @@ module.exports = defineConfig({
         trace: 'on-first-retry',
     },
     projects: [
-        {
-            name: 'chromium',
-            use: {
-                browserName: 'chromium',
-                launchOptions: {
-                    slowMo: config.browser.slowMo,
-                    args: config.browser.headless ? [] : ['--start-maximized'],
-                },
+        { name: 'chrome', channel: 'chrome' },
+        { name: 'edge', channel: 'msedge' },
+        { name: 'firefox', browserName: 'firefox' },
+    ].map(({ name, channel, browserName }) => ({
+        name,
+        use: {
+            browserName: browserName || 'chromium',
+            ...(channel && { channel }),
+            launchOptions: {
+                slowMo: config.browser.slowMo,
+                ...(browserName !== 'firefox' && { args: config.browser.headless ? [] : ['--start-maximized'] }),
             },
         },
-    ],
+    })),
 });
 
 module.exports.config = config;
