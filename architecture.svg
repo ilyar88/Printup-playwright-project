@@ -44,7 +44,7 @@
   <text x="165" y="215" text-anchor="middle" font-size="13" font-weight="600" fill="white">Test Suite</text>
 
   <rect x="270" y="190" width="170" height="38" rx="4" fill="url(#blue)" filter="url(#shadow)"></rect>
-  <text x="355" y="215" text-anchor="middle" font-size="13" font-weight="600" fill="white">ExcelReader</text>
+  <text x="355" y="215" text-anchor="middle" font-size="13" font-weight="600" fill="white">Excel reader</text>
 
   <rect x="460" y="190" width="170" height="38" rx="4" fill="url(#blue)" filter="url(#shadow)"></rect>
   <text x="545" y="215" text-anchor="middle" font-size="13" font-weight="600" fill="white">Image Repository</text>
