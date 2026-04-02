@@ -111,7 +111,7 @@ These scripts run the automation and open the Allure report:
 
 ### For example with Chrome browser:
 ```bash
-npm npm run test:report
+npm run test:report
 ```
 
 ---
@@ -122,9 +122,9 @@ Configured in `playwright.config.js` with three projects:
 
 | Command | Browser | Engine |
 |---------|---------|--------|
-| `npm test chrome` | Google Chrome | Chromium |
-| `npm test edge` | Microsoft Edge | Chromium |
-| `npm test firefox` | Mozilla Firefox | Gecko |
+| `/playwright.config.js --project chrome` | Google Chrome | Chromium |
+| `/playwright.config.js --project edge` | Microsoft Edge | Chromium |
+| `/playwright.config.js --project firefox` | Mozilla Firefox | Gecko |
 
 ---
 
