@@ -88,18 +88,6 @@ npx playwright install --with-deps
 
 ## Running Tests
 
-### Run with browser selection
-```bash
-npm test chrome
-npm test edge
-npm test firefox
-```
-
-### Run tests and open Allure report
-```bash
-npm run test:report -- chrome
-```
-
 These scripts run the automation and open the Allure report:
 ```json
 "scripts": {
@@ -109,7 +97,7 @@ These scripts run the automation and open the Allure report:
 }
 ```
 
-### For example with Chrome browser:
+### Run chrome browser with Allure report
 ```bash
 npm run test:report
 ```
