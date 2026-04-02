@@ -1,10 +1,10 @@
-# PrintUp - E2E Test Automation
+# PrintUp - E2E test automation
 
 End-to-end test automation suite for the PrintUp web application, built with **Playwright** and **Allure** reporting.
 
 ---
 
-## Project Structure
+## Project structure
 
 ```
 Printup project/
@@ -60,7 +60,7 @@ Printup project/
 
 ---
 
-## Test Flow
+## Test flow
 
 Tests run **serially** since each step depends on the previous:
 
@@ -86,9 +86,9 @@ npx playwright install --with-deps
 
 ---
 
-## Running Tests
+## Running tests
 
-These scripts run the automation and open the Allure report:
+These scripts run the automation and open Allure report:
 ```json
 "scripts": {
     "test": "npx playwright test --config=configuration/playwright.config.js --project chrome",
@@ -104,7 +104,7 @@ npm run test:report
 
 ---
 
-## Multi-Browser Support
+## Multi-Browser support
 
 Configured in `playwright.config.js` with three projects:
 
@@ -118,18 +118,18 @@ Configured in `playwright.config.js` with three projects:
 
 ## Reporting
 
-### Allure Report
+### Allure report
 - Every UI action is logged as an **Allure step**
 - Tests are tagged with **Allure features** (Login, Client info, etc.)
 - **Screenshots** are automatically captured and attached on failure
 - Sensitive data (passwords, emails) is **masked** in the report
 
-### Screenshot on Failure
+### Screenshot on failure
 Saved to `screenshots/{YYYY-MM-DD}/{testTitle}.png` and attached to the Allure report.
 
 ---
 
-## Data-Driven Testing
+## Data-Driven testing
 
 Test data lives in `TDD/TestData.xlsx`, organized by sections:
 
@@ -160,7 +160,7 @@ The workflow (`.github/workflows/E2E test.yml`) runs via **manual dispatch** wit
 
 ---
 
-## Tech Stack
+## Tech stack
 
 | Tool | Purpose |
 |------|---------|
