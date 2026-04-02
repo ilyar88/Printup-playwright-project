@@ -47,21 +47,7 @@ Printup project/
 
 ## Architecture
 
-```
-Suite (Test Specs)
-    |
-    v
-Workflows (Flow Orchestration)
-    |
-    v
-Page Objects (UI Locators)  +  Fixtures (Utilities)  +  TDD (Excel Data)
-    |
-    v
-Base Page (Browser Lifecycle)
-    |
-    v
-Playwright + Allure
-```
+![Project Architecture](architecture.svg)
 
 | Layer | Purpose |
 |-------|---------|
@@ -96,15 +82,6 @@ Each workflow reads its data from `TestData.xlsx` and supports multiple iteratio
 ```bash
 npm install
 npx playwright install --with-deps
-```
-
-### Environment Variables
-Create a `.env` file in the project root:
-```
-URL=<application url>
-EMAIL=<test user email>
-PASSWORD=<test user password>
-APPLITOOLS_KEY=<applitools api key>
 ```
 
 ---
