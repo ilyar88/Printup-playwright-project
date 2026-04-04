@@ -5,6 +5,7 @@ class MaterialsInfo {
     constructor(page) {
         this.page = page;
     }
+
     //Dropdown
     materialType() {
         return this.page.locator("input[placeholder='שם מותאם']");
@@ -12,7 +13,7 @@ class MaterialsInfo {
     //Dropdown
     thickness() {
         return this.page.locator("input[type='number']");
-    } 
+    }
     //Dropdown
     color() {
         return this.page.locator("input[placeholder='בחר גוון...']");
