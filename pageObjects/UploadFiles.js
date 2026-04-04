@@ -4,7 +4,7 @@ class UploadFiles {
      */
     constructor(page) {
         this.page = page;
-    } 
+    }
 
     uploadFiles() {
         return this.page.locator("input[type='file']");
