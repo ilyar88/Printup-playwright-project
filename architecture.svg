@@ -107,7 +107,7 @@
   <text x="450" y="592" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Node.js</text>
 
   <rect x="540" y="565" width="150" height="42" rx="4" fill="url(#blue)" filter="url(#shadow)"></rect>
-  <text x="615" y="592" text-anchor="middle" font-size="14" font-weight="bold" fill="white">MCP Server</text>
+  <text x="615" y="592" text-anchor="middle" font-size="14" font-weight="bold" fill="white">OpenAI</text>
 
   <rect x="705" y="565" width="150" height="42" rx="4" fill="url(#blue)" filter="url(#shadow)"></rect>
   <text x="780" y="592" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Grafana k6</text>
