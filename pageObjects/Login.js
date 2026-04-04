@@ -4,7 +4,7 @@ class Login {
      */
     constructor(page) {
         this.page = page;
-    } 
+    }
 
     email() {
         return this.page.locator('#email');
