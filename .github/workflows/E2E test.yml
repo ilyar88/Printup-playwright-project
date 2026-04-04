@@ -13,6 +13,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    environment: Configuration_settings
     steps:
       - uses: actions/checkout@v4
 
@@ -27,6 +28,8 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run E2E tests
+        env:
+          HEADLESS: 'true'
         run: npx playwright test --config=configuration/playwright.config.js --project ${{ github.event.inputs.browser }}
 
       - name: Generate Allure report
