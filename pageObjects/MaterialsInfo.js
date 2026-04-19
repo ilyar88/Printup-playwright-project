@@ -5,26 +5,17 @@ class MaterialsInfo {
     constructor(page) {
         this.page = page;
     }
-
     //Dropdown
-    materialType() {
-        return this.page.locator("input[placeholder='שם מותאם']");
+    dropdowns(name) {
+        return this.page.locator(`input[placeholder='${name}']`);
     }
-    //Dropdown
+
+    chooseOption(name) {
+        return this.page.locator(`div.absolute.z-50 button`, { hasText: name });
+    }
+
     thickness() {
         return this.page.locator("input[type='number']");
-    }
-    //Dropdown
-    color() {
-        return this.page.locator("input[placeholder='בחר גוון...']");
-    }
-    //Dropdown
-    textureMaterial() {
-        return this.page.locator("input[placeholder='בחר מרקם...']");
-    }
-    //Dropdown
-    materialType_2() {
-        return this.page.locator("input[placeholder='בחר סוג...']");
     }
     /***
     * Yuli design
@@ -32,14 +23,12 @@ class MaterialsInfo {
     * קטוגריה A
     * לפי החומר
     ***/
-    async categoryMaterials(names) {
-        for (const name of names) {
-            await this.page.locator(`.flex-row-reverse button`, { hasText: name }).click();
-        }
+    categoryMaterials(name) {
+        return this.page.locator(`.flex-row-reverse button`, { hasText: name });
     }
 
     keepPermanent() {
-        return this.page.locator("input[type='checkbox']");
+        return this.page.locator("label:has(input[type='checkbox'].sr-only)");
     }
 
     save() {
