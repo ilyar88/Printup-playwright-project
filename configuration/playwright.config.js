@@ -1,6 +1,7 @@
 require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') });
 const { defineConfig } = require('@playwright/test');
 
+// Shared config object — consumed by both Playwright and BasePage
 const config = {
     baseUrl: process.env.URL,
     applitoolsKey: process.env.APPLITOOLS_KEY,
@@ -25,7 +26,7 @@ module.exports = defineConfig({
     use: {
         baseURL: config.baseUrl,
         headless: config.browser.headless,
-        viewport: config.browser.headless ? config.browser.viewport : null,
+        viewport: config.browser.headless ? config.browser.viewport : null,  // null lets --start-maximized take effect in headed mode
         actionTimeout: 30000,
         navigationTimeout: 30000,
         screenshot: 'only-on-failure',
@@ -41,6 +42,7 @@ module.exports = defineConfig({
             browserName,
             launchOptions: {
                 slowMo: config.browser.slowMo,
+                // --start-maximized is Chromium-only and only applies in headed mode
                 ...(browserName !== 'firefox' && { args: config.browser.headless ? [] : ['--start-maximized'] }),
             },
         },
