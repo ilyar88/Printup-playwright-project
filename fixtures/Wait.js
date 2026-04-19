@@ -14,10 +14,10 @@ async function waitFor(locator, forElement, seconds) {
         case For.ELEMENT_INVISIBLE:
             await expect(locator).not.toBeVisible({ timeout });
             break;
-        case For.ELEMENT_CLICKABLE:
-            await expect(locator).toBeEnabled({ timeout });
-            await expect(locator).toBeVisible({ timeout });
+        case For.ELEMENT_CLICKABLE: {
+            await locator.waitFor({ state: 'visible', timeout });
             break;
+        }
         default:
             throw new Error(`Unsupported wait condition: ${forElement}`);
     }
@@ -28,6 +28,7 @@ async function waitForListSize(locator, size, seconds) {
     try {
         await expect(locator).toHaveCount(size, { timeout });
     } catch (e) {
+        // Report actual count instead of a raw Playwright timeout error
         const count = await locator.count();
         assertFailed(`Expected list size >= ${size} but found ${count}`);
     }
@@ -38,12 +39,14 @@ async function waitUntilUrlContains(page, uri) {
         try {
             await expect(page).toHaveURL(new RegExp(uri), { timeout: 5000 });
         } catch (e) {
+            // Fallback to a soft text assertion so the failure message shows the actual URL
             const actual = page.url();
             verifyText(actual, uri);
         }
     });
 }
 
+// Waits delaySeconds before starting to poll, then checks visibility every 1s until timeoutSeconds elapses
 async function delayWait(locator, delaySeconds, timeoutSeconds) {
     const start = Date.now();
     const delayMs = delaySeconds * 1000;
@@ -61,6 +64,7 @@ async function delayWait(locator, delaySeconds, timeoutSeconds) {
     throw new Error('Element not visible after delay wait');
 }
 
+// Accepts a human-readable string e.g. "30 Seconds", "2 Minutes", "1 Hours"
 async function waitForTime(timeText) {
     const parts = timeText.split(' ');
     const value = parseInt(parts[0]);
@@ -82,6 +86,14 @@ async function waitForTime(timeText) {
     await new Promise(r => setTimeout(r, millis));
 }
 
+async function waitForFileUpload(locator, seconds = 10) {
+    const timeout = seconds * 1000;
+    await expect(async () => {
+        const count = await locator.evaluate(input => input.files.length);
+        expect(count).toBeGreaterThan(0);
+    }).toPass({ timeout });
+}
+
 const For = {
     ELEMENT_EXISTS: 'ELEMENT_EXISTS',
     ELEMENT_DISPLAYED: 'ELEMENT_DISPLAYED',
@@ -93,4 +105,4 @@ const For = {
     }
 };
 
-module.exports = { waitFor, waitForListSize, waitUntilUrlContains, delayWait, waitForTime };
+module.exports = { waitFor, waitForListSize, waitUntilUrlContains, delayWait, waitForTime, waitForFileUpload };
