@@ -7,4 +7,5 @@ module.exports = {
     ContactInfoFlow: require('./ContactInfoFlow'),
     ProjectInfoFlow: require('./ProjectInfoFlow'),
     MaterialsInfoFlow: require('./MaterialsInfoFlow'),
+    LayersInfoFlow: require('./LayersInfoFlow'),
 };
