@@ -1,8 +1,7 @@
 
 const MaterialsInfo = require('../pageObjects/MaterialsInfo');
-const ClientInfo = require('../pageObjects/ClientInfo');
-const UploadFiles = require('../pageObjects/UploadFiles');
-const { click, selectOption, isChecked, uploadFile } = require('../fixtures/User interface');
+const ItemCenter = require('../pageObjects/ItemCenter');
+const { click, isChecked, typeText } = require('../fixtures/User interface');
 const { readExcel } = require('../TDD/ExcelReader');
 
 // Automates the Materials Info page by uploading a file, selecting material options, and saving.
@@ -13,19 +12,22 @@ class MaterialsInfoFlow {
     // picks a category, toggles "keep permanent", saves, and navigates to the next page.
     static async materialsInfoFlow(page, data) {
         const materialsInfo = new MaterialsInfo(page);
-        const uploadFiles = new UploadFiles(page);
-        const clientInfo = new ClientInfo(page);
-        await uploadFile(uploadFiles.uploadFile(), data.Project_path);
-        await selectOption(materialsInfo.materialType(), 'value', data.Material_type);
-        await selectOption(materialsInfo.thickness(), 'value', data.Thickness_mm);
-        await selectOption(materialsInfo.color(), 'value', data.Color);
-        await selectOption(materialsInfo.textureMaterial(), 'value', data.Texture_material);
-        await selectOption(materialsInfo.materialType_2(), 'value', data.Material_type_2);
-        await materialsInfo.categoryMaterials([data.Category_materials]);
+        const itemCenter = new ItemCenter(page);
+        await click(materialsInfo.categoryMaterials(data.Category_materials));
+        for (const [placeholder, value] of [
+            ['בחר סוג חומר...', data.Material_type],
+            ['בחר גוון...', data.Color],
+            ['בחר מרקם...', data.Texture_material],
+            ['בחר סוג...', data.Material_type_2],
+        ]) {
+            await click(materialsInfo.dropdowns(placeholder));
+            await click(materialsInfo.chooseOption(value));
+        }
+        await typeText(materialsInfo.thickness(),data.Thickness_mm);       
         await isChecked(materialsInfo.keepPermanent(), data.Keep_in_system);
         await click(materialsInfo.save());
-        await click(clientInfo.nextButton());
+        await click(itemCenter.items('שכבות'));
     }
 }
-
+    
 module.exports = MaterialsInfoFlow;
