@@ -4,7 +4,7 @@ const fs     = require('fs');
 const path   = require('path');
 const recast = require('recast');
 const babel  = require('@babel/parser');
-const Healer = require('./Healer');
+const Healer = require('./AriaHealer');
 
 const RECAST_OPTS = {
     parser: { parse: src => babel.parse(src, { sourceType: 'script', plugins: ['classProperties'] }) },
@@ -13,6 +13,8 @@ const RECAST_OPTS = {
 const PAGE_OBJECTS_DIR = path.join(__dirname, '../pageObjects');
 const FLOWS_DIR        = path.join(__dirname, '../workflows');
 
+// Only page.locator() is proxied — page.getByRole(), page.getByText(), page.evaluate(), and
+// chained methods like .filter().getByRole() are NOT intercepted and bypass the 15s healing wait
 const ACTION_METHODS = new Set([
     'click', 'dblclick', 'fill', 'type', 'press', 'check', 'uncheck',
     'selectOption', 'waitFor', 'getAttribute', 'textContent', 'inputValue',
@@ -45,7 +47,7 @@ class SelfHealing {
             get: (target, prop) => {
                 const value = Reflect.get(target, prop);
                 if (typeof value !== 'function' || !ACTION_METHODS.has(prop))
-                    return typeof value === 'function' ? value.bind(target) : value;
+                    return (typeof value === 'function' && prop !== 'constructor') ? value.bind(target) : value;
 
                 return async (...args) => {
                     const found = await target.waitFor({ state: 'attached', timeout: 15000 })
