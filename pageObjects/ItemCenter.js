@@ -17,8 +17,8 @@ class ItemCenter {
     //הגדרות
     //התראה
     //הדפסה
-    items(name) {
-        return this.page.locator(`div.relative.flex.items-center.justify-center > button[title="${name}"]`);
+    items(value) {
+        return this.page.locator(`button[title="${value}"]`, { exact: true });
     }
 }
 
