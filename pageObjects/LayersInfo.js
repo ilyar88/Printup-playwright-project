@@ -7,19 +7,43 @@ class LayersInfo {
     }
 
     upload() {
-        return this.page.locator("div.p-4.shrink-0 > div > div.flex.items-center > button");
+        return this.page.getByRole('button', { name: 'העלה קבצים', exact: true });
     }
 
-    name() {
-        return this.page.locator("input[placeholder='שם מותאם']");
+    layerOptions(value) {
+        return this.page.locator("span.truncate.min-w-0", { hasText: value });
     }
 
-    description(name) {
-        return this.page.locator("span.truncate.min-w-0", { hasText: name });
+    // Returns sheet tab buttons, scoped to the given category so unrelated tabs aren't processed with mismatched data
+    async sheetsLayout(category) {
+        const base = this.page.locator("button.rounded-t.border-white");
+        return await (category ? base.filter({ hasText: category }) : base).all();
     }
 
-    async iconDropDown() {
-        return this.page.locator("svg.transition-transform[fill='currentColor']").all();
+    // Locates the chevron SVG inside the button to open the color/type dropdown, falling back to the currently selected row once "value" has already been set by a prior run
+    async color_type(value, index) {
+        const byValue = this.page.getByRole('button', { name: value, exact: true }).nth(parseInt(index));
+        if (await byValue.count() > 0) return byValue.locator("svg.transition-transform[fill='currentColor']");
+        return this.page.locator('tr[class*="border-l-[#3C7B9B]"] td:nth-child(2) button')
+            .locator("svg.transition-transform[fill='currentColor']");
+    }
+
+    // div.absolute.top-full scopes to the currently open dropdown panel, falling back to the inline machine sub-panel scope when the floating panel has no match
+    async chooseOption(value) {
+        const floating = this.page.locator('div.absolute.top-full')
+            .filter({ hasText: value })
+            .getByRole('button', { name: value, exact: true });
+        if (await floating.count() > 0) return floating;
+        return this.page.locator('tr[class*="border-l-[#3C7B9B]"] td:nth-child(2)')
+            .getByRole('button', { name: value, exact: true })
+            .last();
+    }
+
+    // Selects a cutting style from the inline machine sub-panel; .last() skips the already-selected trigger button, which shares the same accessible name
+    machineType(value) {
+        return this.page.locator('tr[class*="border-l-[#3C7B9B]"] td:nth-child(2)')
+            .getByRole('button', { name: value, exact: true })
+            .last();
     }
 }
 
