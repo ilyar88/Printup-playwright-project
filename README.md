@@ -1,6 +1,6 @@
 # PrintUp - E2E test automation
 
-End-to-end test automation suite for the PrintUp web application, built with **Playwright** and **Allure** reporting.
+End-to-end test automation suite for the PrintUp web application, built with **Playwright** , **Allure** reporting and **Jenkins**.
 
 ---
 
@@ -10,15 +10,15 @@ End-to-end test automation suite for the PrintUp web application, built with **P
 Printup project/
 ├── base/                        # Base classes
 │   ├── BasePage.js              # Browser lifecycle & navigation
-│   ├── SelfHealing.js           # Proxies page.locator(); on failure triggers Healer and patches the source file via AST rewrite
-│   └── Healer.js                # Core AI engine: collects POM/flow context and calls OpenAI to find a replacement CSS selector
+│   ├── SelfHealing.js           # Proxies page.locator(); on failure triggers AriaHealer and patches the source file via AST rewrite
+│   └── AriaHealer.js            # Core AI engine: collects POM/flow context, reads Playwright ARIA snapshot, and calls Claude to find a replacement CSS selector
 ├── configuration/
 │   └── playwright.config.js     # Playwright & browser config
 ├── fixtures/                    # Reusable test utilities
 │   ├── Assert.js                # Assertion helpers with Allure steps
 │   ├── Hooks.js                 # Setup, teardown & screenshot on failure
 │   ├── User interface.js        # UI interactions (click, type, select, check and upload file)
-│   └── Wait fixtures.js         # Wait conditions & synchronization
+│   └── Wait.js                  # Wait conditions & synchronization
 ├── pageObjects/                 # Page Object Model (POM)
 │   ├── Login.js                 # Locators for the login form (email, password, and action buttons)
 │   ├── ClientInfo.js            # Locators for the client info form (name, contacts, checkboxes, notes)
@@ -34,7 +34,9 @@ Printup project/
 │   ├── ClientInfoFlow.js        # Fills the client info form with test data
 │   ├── ContactInfoFlow.js       # Fills the contact info form with test data
 │   ├── ProjectInfoFlow.js       # Fills the project info form with test data
-│   └── MaterialsInfoFlow.js     # Selects material options, sets thickness and proceeds to next section
+│   ├── MaterialsInfoFlow.js     # Selects material options, sets thickness and proceeds to next section
+│   ├── LayersInfoFlow.js        # Uploads layer files and fills layer details
+│   └── ListInfoFlow.js          # Fills the list info form with test data
 ├── Suite/                       # Test specs
 │   └── SanityTest.spec.js       # Main sanity E2E suite
 ├── TDD/                         # Test data
@@ -66,7 +68,7 @@ Printup project/
 | **Page Objects** | Encapsulate UI element locators per page |
 | **Fixtures** | Reusable utilities: assertions, UI actions, waits, hooks |
 | **TDD** | Excel-driven test data parsed by ExcelReader |
-| **Base** | `BasePage` handles browser launch, navigation, and config access. `SelfHealing` wraps every `page.locator()` call if a selector fails, it sends the broken selector and page HTML to OpenAI and retries with the AI-suggested replacement, then writes the fix back into the page object file |
+| **Base** | `BasePage` handles browser launch, navigation, and config access. `SelfHealing` wraps every `page.locator()` call — if a selector fails, it sends the broken selector and Playwright ARIA snapshot to Claude and retries with the AI-suggested replacement, then writes the fix back into the page object file |
 
 ---
 
@@ -75,7 +77,7 @@ Printup project/
 Tests run **serially** since each step depends on the previous:
 
 ```
-#1 Login  -->  #2 Add Client  -->  #3 Add Contact  -->  #4 Add Project  -->  #5 Add Material
+#1 Login  -->  #2 Add Client  -->  #3 Add Contact  -->  #4 Add Project  -->  #5 Add Material  --> #6 LayersInfoFlow  --> #7 ListInfoFlow
 ```
 
 Each workflow reads its data from `TestData.xlsx` and supports multiple iterations.
@@ -198,3 +200,4 @@ Results are uploaded as an artifact (30-day retention).
 | [dotenv](https://www.npmjs.com/package/dotenv) | Environment variable management |
 | [GitHub Actions](https://github.com/features/actions) | CI/CD pipeline |
 | [Grafana k6](https://k6.io/) | Load & performance testing |
+| [Anthropic Claude](https://www.anthropic.com/) | AI self-healing — finds replacement selectors via ARIA snapshot |
