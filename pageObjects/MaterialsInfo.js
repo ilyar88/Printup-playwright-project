@@ -5,17 +5,41 @@ class MaterialsInfo {
     constructor(page) {
         this.page = page;
     }
-    //Dropdown
-    dropdowns(name) {
-        return this.page.locator(`input[placeholder='${name}']`);
+    // getByRole bypasses SelfHealing proxy — locator() would wait 15s before healing
+    upload() {
+        return this.page.locator('button.rounded-button', { hasText: 'העלה קבצים' , exact: true })
     }
 
-    chooseOption(name) {
-        return this.page.locator(`div.absolute.z-50 button`, { hasText: name });
+    dropdowns(value) {
+        return this.page.locator(`input[placeholder='${value}']`);
+    }
+
+    chooseOption(value) {
+        return this.page.locator(`div.absolute.z-50 button`, { hasText: value });
+    }
+
+    // dispatchEvent('change') is required because React controlled components ignore
+    // programmatic value changes unless the synthetic change event is fired explicitly
+    async selectDropdown(placeholder, value) {
+        const input = this.dropdowns(placeholder);
+        await input.click();
+        const option = this.chooseOption(value);
+        await option.waitFor({ state: 'visible', timeout: 5000 });
+        await option.click();
+        await input.dispatchEvent('change');
+        await this.page.waitForTimeout(300);
     }
 
     thickness() {
         return this.page.locator("input[type='number']");
+    }
+
+    // Both 'input' and 'change' events needed: 'input' updates React state, 'change' enables the save button
+    async fillThickness(value) {
+        const input = this.thickness();
+        await input.fill(String(value));
+        await input.dispatchEvent('input');
+        await input.dispatchEvent('change');
     }
     /***
     * Yuli design
@@ -23,16 +47,22 @@ class MaterialsInfo {
     * קטוגריה A
     * לפי החומר
     ***/
-    categoryMaterials(name) {
-        return this.page.locator(`.flex-row-reverse button`, { hasText: name });
+    categoryMaterials(value) {
+        return this.page.locator(`.flex-row-reverse button`, { hasText: value });
     }
 
     keepPermanent() {
         return this.page.locator("label:has(input[type='checkbox'].sr-only)");
     }
 
+    // force:true is required at the call site — a z-20 overlay covers the button even when enabled
     save() {
         return this.page.locator("button[type='submit']");
+    }
+
+    // getByRole('navigation') matches the <nav> HTML element; [role="navigation"] attribute selector does not
+    savedMaterial(value) {
+        return this.page.getByRole('navigation').getByRole('button', { name: value });
     }
 }
 
