@@ -1,6 +1,6 @@
 const ContactInfo = require('../pageObjects/ContactInfo');
 const ClientInfo = require('../pageObjects/ClientInfo');
-const { typeText, isChecked } = require('../fixtures/User interface');
+const { typeText, click, isChecked } = require('../fixtures/User interface');
 const { readExcel } = require('../TDD/ExcelReader');
 
 // Automates the Contact Info section by filling in additional contact details from test data.
@@ -21,6 +21,7 @@ class ContactInfoFlow {
         await typeText(contactInfo.email(), data.Email.split('-')[0].trim());
         await typeText(contactInfo.role(), data.Role);
         await typeText(contactInfo.notes(), data.Notes);
+        await click(clientInfo.nextButton());
     }
 }
 
