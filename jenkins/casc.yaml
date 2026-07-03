@@ -1,0 +1,36 @@
+jobs:
+  - script: |
+      pipelineJob('printup') {
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote { url('https://github.com/ilyar88/Printup-project.git') }
+                branch('main')
+              }
+            }
+            scriptPath('Jenkinsfile')
+          }
+        }
+      }
+
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - string:
+              id: "PRINTUP_URL"
+              secret: "${URL}"
+              description: "PrintUp URL"
+          - string:
+              id: "PRINTUP_EMAIL"
+              secret: "${EMAIL}"
+              description: "PrintUp Email"
+          - string:
+              id: "PRINTUP_PASSWORD"
+              secret: "${PASSWORD}"
+              description: "PrintUp Password"
+          - string:
+              id: "PRINTUP_APPLITOOLS_KEY"
+              secret: "${APPLITOOLS_KEY}"
+              description: "Applitools Key"
