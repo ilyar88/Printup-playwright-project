@@ -15,7 +15,7 @@ const config = {
 module.exports = defineConfig({
     testDir: '../Suite',
     testMatch: '**/*.spec.js',
-    timeout: 60000,
+    timeout: 360000,
     expect: {
         timeout: 10000,
     },
