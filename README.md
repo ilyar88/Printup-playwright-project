@@ -1,6 +1,6 @@
 # PrintUp - E2E test automation
 
-End-to-end test automation suite for the PrintUp web application, built with **Playwright** , **Allure** reporting and **Jenkins**.
+End-to-end test automation suite for the PrintUp web application, built with **Playwright**, **Allure** reporting, and run via **Jenkins** or **GitHub Actions**.
 
 ---
 
@@ -8,7 +8,7 @@ End-to-end test automation suite for the PrintUp web application, built with **P
 
 ```
 Printup project/
-├── base/                        # Base classes
+├── base/                        
 │   ├── BasePage.js              # Browser lifecycle & navigation
 │   ├── SelfHealing.js           # Proxies page.locator(); on failure triggers AriaHealer and patches the source file via AST rewrite
 │   └── AriaHealer.js            # Core AI engine: collects POM/flow context, reads Playwright ARIA snapshot, and calls Claude to find a replacement CSS selector
@@ -27,7 +27,9 @@ Printup project/
 │   ├── MaterialsInfo.js         # Locators for the materials form (dropdowns, thickness, category, save)
 │   ├── UploadFiles.js           # Locators for file upload elements (design, project files, work order, archive)
 │   ├── ItemCenter.js            # Toolbar button locator (by title attribute) for the item-center panel
-│   └── LayersInfo.js            # Locators for the layers panel: upload button, name input, layer description, and icon dropdowns
+│   ├── LayersInfo.js            # Locators for the layers panel: upload button, name input, layer description, and icon dropdowns
+│   ├── ListInfo.js              # Locators for the list/grid view: filter options, column headers, displayed items, export and icons
+│   └── ResetPassword.js         # Locators for the reset-password form (new password, confirm password, submit)
 ├── workflows/                   # The main workflows of the E2E testing
 │   ├── index.js                 # Gathers all workflow classes into one object and exports
 │   ├── LoginFlow.js             # Fills credentials from env vars and verifies login
@@ -36,7 +38,8 @@ Printup project/
 │   ├── ProjectInfoFlow.js       # Fills the project info form with test data
 │   ├── MaterialsInfoFlow.js     # Selects material options, sets thickness and proceeds to next section
 │   ├── LayersInfoFlow.js        # Uploads layer files and fills layer details
-│   └── ListInfoFlow.js          # Fills the list info form with test data
+│   ├── ListInfoFlow.js          # Fills the list info form with test data
+│   └── ForgotPasswordFlow.js    # Requests a password reset, reads the reset link from Gmail via IMAP, and sets a new password
 ├── Suite/                       # Test specs
 │   └── SanityTest.spec.js       # Main sanity E2E suite
 ├── TDD/                         # Test data
@@ -45,6 +48,9 @@ Printup project/
 ├── Matirals/                    # Upload test files (SVGs)
 ├── k6/
 │   └── loadTest.js              # k6 load test: ramp-up/hold/ramp-down stages with p95 response-time and error-rate thresholds
+├── jenkins/
+│   └── casc.yaml                # Jenkins Configuration-as-Code: defines the `printup` pipeline job and its credentials
+├── Jenkinsfile                  # Jenkins pipeline: installs deps, runs Playwright tests per browser param, publishes Allure results
 ├── .github/
 │   ├── actions/k6-load-test/
 │   │   └── action.yml           # Reusable composite action that installs k6 and runs the load test script
@@ -174,6 +180,16 @@ The workflow (`.github/workflows/E2E test.yml`) runs via **manual dispatch** wit
 
 ---
 
+## CI/CD - Jenkins
+
+The `Jenkinsfile` defines the `printup` pipeline job (provisioned via `jenkins/casc.yaml`), parameterized by browser (chrome/firefox/edge):
+
+**Pipeline:** Install deps → install Chromium → run Playwright tests → publish Allure results & archive the report
+
+Credentials (`PRINTUP_URL`, `PRINTUP_EMAIL`, `PRINTUP_PASSWORD`, `PRINTUP_APPLITOOLS_KEY`) are injected from the Jenkins credential store.
+
+---
+
 ## Load testing - Grafana k6
 
 The workflow (`.github/workflows/k6 load test.yml`) runs via **manual dispatch** with configurable load parameters:
@@ -199,5 +215,9 @@ Results are uploaded as an artifact (30-day retention).
 | [xlsx](https://www.npmjs.com/package/xlsx) | Excel data parsing |
 | [dotenv](https://www.npmjs.com/package/dotenv) | Environment variable management |
 | [GitHub Actions](https://github.com/features/actions) | CI/CD pipeline |
+| [Jenkins](https://www.jenkins.io/) | Alternate CI/CD pipeline (Jenkinsfile + Configuration-as-Code) |
 | [Grafana k6](https://k6.io/) | Load & performance testing |
+| [Applitools Eyes](https://applitools.com/) | Visual (screenshot) regression testing |
+| [imapflow](https://www.npmjs.com/package/imapflow) | Reads reset-password emails via IMAP for the forgot-password flow |
+| [node-autoit-koffi](https://www.npmjs.com/package/node-autoit-koffi) | Drives native Windows file-upload dialogs |
 | [Anthropic Claude](https://www.anthropic.com/) | AI self-healing — finds replacement selectors via ARIA snapshot |
