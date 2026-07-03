@@ -32,15 +32,22 @@ async function isChecked(locator, text) {
     );
 }
 
-// Selects a dropdown option by 'value' (text match) or 'index'. Falls back to autocomplete if no <option> match found.
+// Selects a dropdown option by 'value' (text match) or 'index' (position).
+// Falls back to autocomplete click if no <option> match found for 'value'.
 async function selectOption(locator, option, value) {
     switch (option) {
         case 'value':
+            // Wait for the target option to load (dynamic selects fetch options via API on mount)
+            await locator.locator('option').filter({ hasText: value.trim() }).waitFor({ state: 'attached', timeout: 10000 }).catch(() => {});
             const options = await locator.locator('option').evaluateAll(opts => opts.map(o => ({ text: o.textContent.trim(), value: o.value })));
             const found = options.find(o => o.text.includes(value.trim()));
             if (found) {
+                // Standard <select> — select by the DOM value attribute of the matched option
                 await locator.selectOption({ value: found.value });
             } else {
+                // Autocomplete widget — type the value and click the matching suggestion from the dropdown list
+                const tagName = await locator.evaluate(el => el.tagName.toLowerCase());
+                if (tagName === 'select') throw new Error(`No option matching "${value}" found in <select>`);
                 await locator.fill(value);
                 const suggestion = locator.page().locator(`[role="option"]`, { hasText: value }).first();
                 if (await suggestion.count() > 0) await suggestion.click();
@@ -99,15 +106,15 @@ async function iteration(T, page, i) {
 }
 
 // Runs an Applitools visual snapshot for the current page state and closes the Eyes session.
-async function checkUI(page, testName) {
+async function checkUI(page, testName, appName = 'Printup', checkName = 'After login') {
     await allure.step('Applitools visual check', async () => {
         const screenSize = await page.evaluate(() => ({ width: screen.availWidth, height: screen.availHeight }));
         const eyes = new Eyes();
         eyes.setApiKey(process.env.APPLITOOLS_KEY);
         eyes.setHostOS(`${os.type()} ${os.release()}`);
         eyes.setHostApp(`Chrome ${page.context().browser().version()}`);
-        await eyes.open(page, 'Printup', testName, { width: screenSize.width, height: screenSize.height });
-        await eyes.check('After login', Target.window());
+        await eyes.open(page, appName, testName, { width: screenSize.width, height: screenSize.height });
+        await eyes.check(checkName, Target.window());
         await eyes.close().catch(() => {});
         await page.setViewportSize(screenSize);
     });
