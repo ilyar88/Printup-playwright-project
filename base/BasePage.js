@@ -27,6 +27,7 @@ class BasePage {
         return instance;
     }
 
+    // context.close() must come before browser.close() to flush pending network requests cleanly
     async closeBrowser() {
         await this.context.close();
         await this.browser.close();
@@ -34,6 +35,13 @@ class BasePage {
 
     async navigate(path = '') {
         await this.page.goto(`${this.baseUrl}${path}`);
+    }
+
+    // Opens a second tab in an existing context — used for flows that require comparing two pages
+    static async openNewTab(context, url) {
+        const newPage = await context.newPage();
+        await newPage.goto(url);
+        return newPage;
     }
 }
 
