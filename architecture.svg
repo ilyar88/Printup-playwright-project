@@ -26,12 +26,15 @@
   <!-- ==================== EXECUTION LAYER ==================== -->
   <text x="780" y="95" text-anchor="middle" font-size="20" font-weight="bold" fill="#1a252f" font-style="italic">Execution</text>
 
-  <!-- 2 boxes: 180px wide, 20px gap, centered at 450 → starts at 260 -->
-  <rect x="260" y="75" width="180" height="38" rx="4" fill="url(#grey)" filter="url(#shadow)"></rect>
-  <text x="350" y="100" text-anchor="middle" font-size="14" font-weight="600" fill="white">GitHub Actions CI</text>
+  <!-- 3 boxes: aligned to Test Resources row (Test Suite / Excel reader / Image Repository) -->
+  <rect x="90" y="75" width="160" height="38" rx="4" fill="url(#grey)" filter="url(#shadow)"></rect>
+  <text x="170" y="100" text-anchor="middle" font-size="13" font-weight="600" fill="white">Jenkins</text>
 
-  <rect x="460" y="75" width="180" height="38" rx="4" fill="url(#grey)" filter="url(#shadow)"></rect>
-  <text x="550" y="100" text-anchor="middle" font-size="14" font-weight="600" fill="white">Local Execution</text>
+  <rect x="270" y="75" width="170" height="38" rx="4" fill="url(#grey)" filter="url(#shadow)"></rect>
+  <text x="355" y="100" text-anchor="middle" font-size="13" font-weight="600" fill="white">GitHub Actions CI</text>
+
+  <rect x="460" y="75" width="170" height="38" rx="4" fill="url(#grey)" filter="url(#shadow)"></rect>
+  <text x="545" y="100" text-anchor="middle" font-size="13" font-weight="600" fill="white">Local Execution</text>
 
   <!-- Divider line -->
   <line x1="40" y1="135" x2="860" y2="135" stroke="#d0d5dd" stroke-width="1.5" stroke-dasharray="6,4"></line>
@@ -107,7 +110,7 @@
   <text x="450" y="592" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Node.js</text>
 
   <rect x="540" y="565" width="150" height="42" rx="4" fill="url(#blue)" filter="url(#shadow)"></rect>
-  <text x="615" y="592" text-anchor="middle" font-size="14" font-weight="bold" fill="white">OpenAI</text>
+  <text x="615" y="592" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Anthropic</text>
 
   <rect x="705" y="565" width="150" height="42" rx="4" fill="url(#blue)" filter="url(#shadow)"></rect>
   <text x="780" y="592" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Grafana k6</text>
