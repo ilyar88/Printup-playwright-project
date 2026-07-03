@@ -1,6 +1,6 @@
 # PrintUp - E2E test automation
 
-End-to-end test automation suite for the PrintUp web application, built with **Playwright**, **Allure** reporting, and run via **Jenkins** or **GitHub Actions**.
+End-to-end test automation suite for the PrintUp web application, built with **Playwright**, **Allure** reporting, run via **Jenkins** or **GitHub Actions**.
 
 ---
 
@@ -74,7 +74,7 @@ Printup project/
 | **Page Objects** | Encapsulate UI element locators per page |
 | **Fixtures** | Reusable utilities: assertions, UI actions, waits, hooks |
 | **TDD** | Excel-driven test data parsed by ExcelReader |
-| **Base** | `BasePage` handles browser launch, navigation, and config access. `SelfHealing` wraps every `page.locator()` call — if a selector fails, it sends the broken selector and Playwright ARIA snapshot to Claude and retries with the AI-suggested replacement, then writes the fix back into the page object file |
+| **Base** | `BasePage` handles browser launch, navigation, and config access. `SelfHealing` wraps every `page.locator()` call if a selector fails, it sends the broken selector and Playwright ARIA snapshot to Claude and retries with the AI-suggested replacement, then writes the fix back into the page object file |
 
 ---
 
