@@ -5,7 +5,7 @@ class MaterialsInfo {
     constructor(page) {
         this.page = page;
     }
-    // getByRole bypasses SelfHealing proxy — locator() would wait 15s before healing
+  
     upload() {
         return this.page.locator('button.rounded-button', { hasText: 'העלה קבצים' , exact: true })
     }
@@ -55,12 +55,12 @@ class MaterialsInfo {
         return this.page.locator("label:has(input[type='checkbox'].sr-only)");
     }
 
-    // force:true is required at the call site — a z-20 overlay covers the button even when enabled
     save() {
         return this.page.locator("button[type='submit']");
     }
 
-    // getByRole('navigation') matches the <nav> HTML element; [role="navigation"] attribute selector does not
+    // <nav> has an implicit ARIA role of "navigation", which getByRole('navigation') recognizes;
+    // a [role="navigation"] CSS selector would only match if that attribute were explicitly set in the HTML
     savedMaterial(value) {
         return this.page.getByRole('navigation').getByRole('button', { name: value });
     }
