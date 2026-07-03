@@ -2,20 +2,22 @@ const { expect } = require('@playwright/test');
 const { allure } = require('allure-playwright');
 const { verifyText, assertFailed } = require('./Assert');
 
+// Waits for a locator state by name — supports ELEMENT_EXISTS, ELEMENT_DISPLAYED, ELEMENT_INVISIBLE, ELEMENT_CLICKABLE
 async function waitFor(locator, forElement, seconds) {
     const timeout = seconds * 1000;
     switch (For.parse(forElement)) {
         case For.ELEMENT_EXISTS:
-            await expect(locator).toBeEnabled({ timeout });
+            await expect(locator).toBeAttached({ timeout });
             break;
         case For.ELEMENT_DISPLAYED:
             await expect(locator).toBeVisible({ timeout });
             break;
         case For.ELEMENT_INVISIBLE:
-            await expect(locator).not.toBeVisible({ timeout });
+            await expect(locator).toBeHidden({ timeout });
             break;
         case For.ELEMENT_CLICKABLE: {
-            await locator.waitFor({ state: 'visible', timeout });
+            await expect(locator).toBeVisible({ timeout });
+            await expect(locator).toBeEnabled({ timeout });
             break;
         }
         default:
@@ -44,24 +46,6 @@ async function waitUntilUrlContains(page, uri) {
             verifyText(actual, uri);
         }
     });
-}
-
-// Waits delaySeconds before starting to poll, then checks visibility every 1s until timeoutSeconds elapses
-async function delayWait(locator, delaySeconds, timeoutSeconds) {
-    const start = Date.now();
-    const delayMs = delaySeconds * 1000;
-    const totalMs = (delaySeconds + timeoutSeconds) * 1000;
-
-    while (Date.now() - start < totalMs) {
-        const elapsed = Date.now() - start;
-        if (elapsed >= delayMs) {
-            if (await locator.isVisible()) {
-                return locator;
-            }
-        }
-        await new Promise(r => setTimeout(r, 1000));
-    }
-    throw new Error('Element not visible after delay wait');
 }
 
 // Accepts a human-readable string e.g. "30 Seconds", "2 Minutes", "1 Hours"
@@ -105,4 +89,4 @@ const For = {
     }
 };
 
-module.exports = { waitFor, waitForListSize, waitUntilUrlContains, delayWait, waitForTime, waitForFileUpload };
+module.exports = { waitFor, waitForListSize, waitUntilUrlContains, waitForTime, waitForFileUpload };
