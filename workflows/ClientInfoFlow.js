@@ -14,6 +14,7 @@ class ClientInfoFlow {
         const checkboxes = clientInfo.checkboxes();
         await click(clientInfo.newCustomer());
         await typeText(clientInfo.clientName(), data.name_surname);
+        await typeText(clientInfo.editorName(), data.editor_name);
         await typeText(clientInfo.contactName(), data.name_surname);
         await isChecked(checkboxes.nth(0), data.main_phone_number);
         await typeText(clientInfo.phoneNumber(), data.main_phone_number.split('-')[0].trim());
