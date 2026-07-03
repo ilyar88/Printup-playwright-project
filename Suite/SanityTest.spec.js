@@ -56,7 +56,7 @@ class SanityPage extends BasePage {
                 });
             }
 
-/*             test('#10 Reset password', async () => {
+/*             test('#8 Reset password', async () => {
                 await allure.feature('Reset password');
                 await ForgotPasswordFlow.login(this.page);
             }); */
