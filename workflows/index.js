@@ -8,4 +8,6 @@ module.exports = {
     ProjectInfoFlow: require('./ProjectInfoFlow'),
     MaterialsInfoFlow: require('./MaterialsInfoFlow'),
     LayersInfoFlow: require('./LayersInfoFlow'),
+    ListInfoFlow: require('./ListInfoFlow'),
+    ForgotPasswordFlow: require('./ForgotPasswordFlow'),
 };
