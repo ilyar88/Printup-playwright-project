@@ -7,7 +7,8 @@ const { LoginFlow,
     ContactInfoFlow,
     ProjectInfoFlow,
     MaterialsInfoFlow,
-    LayersInfoFlow } = require('../workflows');
+    LayersInfoFlow,
+    ListInfoFlow } = require('../workflows');
 const { setup, teardown } = require('../fixtures/Hooks');
 const { iteration } = require('../fixtures/User interface');
 
@@ -49,7 +50,16 @@ class SanityPage extends BasePage {
                     await allure.feature('Layers info');
                     await iteration(LayersInfoFlow, this.page, i);
                 });
+                test(`#7 Add list - iteration ${i + 1}`, async () => {
+                    await allure.feature('List info');
+                    await iteration(ListInfoFlow, this.page, i);
+                });
             }
+
+/*             test('#10 Reset password', async () => {
+                await allure.feature('Reset password');
+                await ForgotPasswordFlow.login(this.page);
+            }); */
         });
     }
 }
