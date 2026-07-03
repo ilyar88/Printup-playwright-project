@@ -3,6 +3,7 @@ const { allure } = require('allure-playwright');
 const fs = require('fs');
 const path = require('path');
 
+// Launches the browser once before all tests and wires the shared page/browser/context onto the suite instance
 function setup(page) {
     test.beforeAll(async () => {
         const opened = await page.constructor.openBrowser();
@@ -10,9 +11,8 @@ function setup(page) {
         page.browser = opened.browser;
         page.context = opened.context;
     });
-
+    // Capture and attach a screenshot to Allure only when the test fails
     test.afterEach(async ({}, testInfo) => {
-        // Capture and attach a screenshot to Allure only when the test fails
         if (testInfo.status !== testInfo.expectedStatus) {
             const date = new Date().toISOString().split('T')[0];
             const dir = path.resolve(__dirname, `../screenshots/${date}`);
@@ -24,6 +24,7 @@ function setup(page) {
     });
 }
 
+// Kept separate from setup so tests that need the browser open after the last test can omit teardown()
 function teardown(page) {
     test.afterAll(async () => {
         await page.closeBrowser();
