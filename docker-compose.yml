@@ -1,0 +1,29 @@
+services:
+  jenkins:
+    build: .
+    user: root  # needed for playwright install --with-deps
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    environment:
+      - URL=${URL}
+      - EMAIL=${EMAIL}
+      - PASSWORD=${PASSWORD}
+      - APPLITOOLS_KEY=${APPLITOOLS_KEY}
+      - CASC_JENKINS_CONFIG=/var/jenkins_config/casc.yaml
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - ./jenkins/casc.yaml:/var/jenkins_config/casc.yaml
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+    command: http --domain=canopener-cradling-scratch.ngrok-free.dev jenkins:8080
+    ports:
+      - "4040:4040"  # ngrok dashboard — visit to get the public URL
+    depends_on:
+      - jenkins
+
+volumes:
+  jenkins_home:
