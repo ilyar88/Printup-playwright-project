@@ -10,8 +10,12 @@ class ClientInfo {
         return this.page.locator("header > div > button.inline-flex");
     }
 
-    clientName() {
+     clientName() {
         return this.page.locator("input[name='name']");
+    }
+
+    editorName() {
+        return this.page.locator("input[name='editorName']");
     }
 
     contactName() {
@@ -58,7 +62,7 @@ class ClientInfo {
     }
 
     nextButton() {
-        return this.page.locator("div > span> button");
+        return this.page.getByRole('button', { name: 'הבא' });
     }
 
     back() {
