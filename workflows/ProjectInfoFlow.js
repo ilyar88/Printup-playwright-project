@@ -21,9 +21,9 @@ class ProjectInfoFlow {
         const hh = String(Math.floor(totalMinutes / 60)).padStart(2, '0');
         const mm = String(totalMinutes % 60).padStart(2, '0');
         await typeText(projectInfo.time(), `${hh}:${mm}`);
-        await selectOption(projectInfo.status(), 'value', data.Status_condition);
         await typeText(projectInfo.folderPath(), data.Project_path);
         await typeText(projectInfo.notes(), data.Notes);
+        await selectOption(projectInfo.status(), 'value', data.Status_condition);
         await click(itemCenter.items('חומרים'));  // navigate to Materials panel
     }
 }
