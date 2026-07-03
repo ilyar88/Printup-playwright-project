@@ -18,7 +18,9 @@
       "WebSearch",
       "WebFetch(domain:store.apify.com)",
       "WebFetch(domain:apify.com)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "mcp__playwright__browser_run_code_unsafe",
+      "mcp__playwright__browser_press_key"
     ]
   }
 }
