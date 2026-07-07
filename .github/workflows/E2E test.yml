@@ -30,6 +30,10 @@ jobs:
       - name: Run E2E tests
         env:
           HEADLESS: 'true'
+          URL: ${{ vars.URL }}
+          EMAIL: ${{ secrets.EMAIL }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          APPLITOOLS_KEY: ${{ secrets.APPLITOOLS_KEY }}
         run: npx playwright test --config=configuration/playwright.config.js --project ${{ github.event.inputs.browser }}
 
       - name: Generate Allure report
@@ -47,6 +51,7 @@ jobs:
   trigger-jenkins:
     needs: test
     runs-on: ubuntu-latest
+    environment: Configuration_settings  # supplies Jenkins credentials
     steps:
       - name: Trigger Jenkins pipeline
         run: |
