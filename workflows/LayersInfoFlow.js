@@ -1,6 +1,6 @@
 const LayersInfo = require('../pageObjects/LayersInfo');
 const ItemCenter = require('../pageObjects/ItemCenter');
-const { uploadFileViaAutoIt, click } = require('../fixtures/User interface');
+const { uploadFile, click } = require('../fixtures/User interface');
 const { readExcel } = require('../TDD/ExcelReader');
 
 class LayersInfoFlow {
@@ -14,7 +14,7 @@ class LayersInfoFlow {
         const sheets = await layersInfo.sheetsLayout(category);
         for (const sheet of sheets) {
             await click(sheet) //Click on the sheets to uplaod the file, like: טקסט צבע, צלבים צבע, חיתוך צורני, הדפסה צבע
-            await uploadFileViaAutoIt(layersInfo.upload(), 'Open', data.Layers_path);
+            await uploadFile(layersInfo.upload(), data.Layers_path);
             var [description, option, type] = data.Description.split(",");
             await click(await layersInfo.color_type(description, data.index)); //Click on color drop-down to open the options
             if (type) {
