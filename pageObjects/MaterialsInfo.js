@@ -7,7 +7,7 @@ class MaterialsInfo {
     }
   
     upload() {
-        return this.page.locator('button.rounded-button', { hasText: 'העלה קבצים' , exact: true })
+        return this.page.locator("input[type='file']");
     }
 
     dropdowns(value) {
