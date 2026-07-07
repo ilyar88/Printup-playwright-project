@@ -2,7 +2,7 @@ const os = require('os');
 const path = require('path');
 const { allure } = require('allure-playwright');
 const { Eyes, Target } = require('@applitools/eyes-playwright');
-const { waitForFileUpload, waitForTime } = require('./Wait');
+const { waitForTime } = require('./Wait');
 
 const envValues = Object.values(process.env).filter(v => v && v.length > 0);
 const isSensitive = text => envValues.includes(text);
@@ -73,29 +73,45 @@ async function selectDate(locator, date) {
     );
 }
 
-// Uploads a file directly via Playwright's setInputFiles. Verifies the file is attached before continuing.
+// Uploads a file, working whether the locator is a plain (even hidden) <input type=file> or a
+// non-input trigger (e.g. a button backed by a File System Access API picker) — headless on any OS.
 async function uploadFile(locator, filePath) {
     if (!filePath) return;
-    const absolutePath = path.resolve(__dirname, '..', filePath);
-    await allure.step(`Upload file: ${absolutePath}`, async () => {
-        await locator.setInputFiles(absolutePath);
-        await waitForFileUpload(locator);
+    // Excel test data stores Windows-style backslashes — normalize so the path works on Linux too.
+    // Kept relative to the project root (Playwright's cwd) rather than resolved to an absolute path.
+    const relativePath = filePath.split(/[\\/]/).join(path.sep);
+    await allure.step(`Upload file: ${relativePath}`, async () => {
+        const page = locator.page();
+        const isFileInput = await locator.evaluate(el => el.tagName === 'INPUT' && el.type === 'file');
+        if (isFileInput) {
+            await locator.setInputFiles(relativePath);
+        } else {
+            const [chooser] = await Promise.all([
+                page.waitForEvent('filechooser'),
+                locator.click(),
+            ]);
+            await chooser.setFiles(relativePath);
+        }
+        await page.waitForLoadState('networkidle');
     });
 }
 
 // Uploads a file through a native OS dialog using AutoIt. Waits for the dialog by title, types the path, and clicks Open.
 // Waits for network idle to confirm upload completed, then fails the test if any console errors were captured during the upload.
-async function uploadFileViaAutoIt(locator, title, filePath) {
+async function uploadFileAutoIt(locator, title, filePath) {
     if (!filePath) return;
     // Loaded lazily: this native AutoIt binding is Windows-only and would crash the
     // whole module (and test collection) on load if required at file scope on Linux CI.
     const { init, winWaitActive, controlSetText, controlClick } = require('node-autoit-koffi');
-    const absolutePath = path.resolve(__dirname, '..', filePath);
-    await allure.step(`Upload file via dialog: ${absolutePath}`, async () => {
+    // Excel test data stores Windows-style backslashes — normalize so the path works on Linux too
+    const relativePath = filePath.split(/[\\/]/).join(path.sep);
+    await allure.step(`Upload file via dialog: ${relativePath}`, async () => {
         await init();
         await click(locator);
         await winWaitActive(title, undefined, 5000);
-        await controlSetText(title, undefined, 'Edit1', absolutePath);
+        // Quoted: the native dialog's filename field splits unquoted paths on spaces
+        // (this project's own path — "Printup project" — has one), treating them as multiple files
+        await controlSetText(title, undefined, 'Edit1', `"${relativePath}"`);
         await controlClick(title, undefined, 'Button1');
         await waitForTime('5 Seconds');
     });
@@ -122,4 +138,4 @@ async function checkUI(page, testName, appName = 'Printup', checkName = 'After l
     });
 }
 
-module.exports = { typeText, click, selectOption, selectDate, iteration, isChecked, uploadFile, uploadFileViaAutoIt, checkUI };
+module.exports = { typeText, click, selectOption, selectDate, iteration, isChecked, uploadFile, uploadFileAutoIt, checkUI };
