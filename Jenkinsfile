@@ -22,7 +22,7 @@ pipeline {
 
         stage('Install Browsers') {
             steps {
-                sh 'npx playwright install --with-deps chromium'
+                sh "npx playwright install --with-deps ${params.BROWSER == 'firefox' ? 'firefox' : 'chromium'}"
             }
         }
 
