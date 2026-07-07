@@ -3,7 +3,7 @@ const LayersInfo = require('../pageObjects/LayersInfo');
 const ItemCenter = require('../pageObjects/ItemCenter');
 const Assert = require('../fixtures/Assert');
 const Wait = require("../fixtures/Wait");
-const { click, isChecked, typeText, uploadFileViaAutoIt } = require('../fixtures/User interface');
+const { click, isChecked, typeText, uploadFile } = require('../fixtures/User interface');
 const { readExcel } = require('../TDD/ExcelReader');
 
 // Automates the Materials Info page by uploading a file, selecting material options, and saving.
@@ -46,7 +46,7 @@ class MaterialsInfoFlow {
             // Must click the saved material in the nav list before the שכבות tab becomes accessible
             await click(materialsInfo.savedMaterial(materialName));
         }
-        await uploadFileViaAutoIt(materialsInfo.upload(), 'Open', data.Material_path);
+        await uploadFile(materialsInfo.upload(), data.Material_path);
         await click(itemCenter.items('שכבות'));
         
         for (const [value] of [
