@@ -3,7 +3,6 @@ const path = require('path');
 const { allure } = require('allure-playwright');
 const { Eyes, Target } = require('@applitools/eyes-playwright');
 const { waitForFileUpload, waitForTime } = require('./Wait');
-const { init, winWaitActive, controlSetText, controlClick } = require('node-autoit-koffi');
 
 const envValues = Object.values(process.env).filter(v => v && v.length > 0);
 const isSensitive = text => envValues.includes(text);
@@ -88,6 +87,9 @@ async function uploadFile(locator, filePath) {
 // Waits for network idle to confirm upload completed, then fails the test if any console errors were captured during the upload.
 async function uploadFileViaAutoIt(locator, title, filePath) {
     if (!filePath) return;
+    // Loaded lazily: this native AutoIt binding is Windows-only and would crash the
+    // whole module (and test collection) on load if required at file scope on Linux CI.
+    const { init, winWaitActive, controlSetText, controlClick } = require('node-autoit-koffi');
     const absolutePath = path.resolve(__dirname, '..', filePath);
     await allure.step(`Upload file via dialog: ${absolutePath}`, async () => {
         await init();
