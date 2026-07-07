@@ -70,14 +70,6 @@ async function waitForTime(timeText) {
     await new Promise(r => setTimeout(r, millis));
 }
 
-async function waitForFileUpload(locator, seconds = 10) {
-    const timeout = seconds * 1000;
-    await expect(async () => {
-        const count = await locator.evaluate(input => input.files.length);
-        expect(count).toBeGreaterThan(0);
-    }).toPass({ timeout });
-}
-
 const For = {
     ELEMENT_EXISTS: 'ELEMENT_EXISTS',
     ELEMENT_DISPLAYED: 'ELEMENT_DISPLAYED',
@@ -89,4 +81,4 @@ const For = {
     }
 };
 
-module.exports = { waitFor, waitForListSize, waitUntilUrlContains, waitForTime, waitForFileUpload };
+module.exports = { waitFor, waitForListSize, waitUntilUrlContains, waitForTime };
