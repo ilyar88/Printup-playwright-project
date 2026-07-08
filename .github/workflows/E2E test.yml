@@ -30,6 +30,13 @@ jobs:
       - name: Run E2E tests
         env:
           HEADLESS: 'true'
+          URL: ${{ secrets.URL }}
+          EMAIL: ${{ secrets.EMAIL }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          NEW_PASSWORD: ${{ secrets.NEW_PASSWORD }}
+          APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
+          APPLITOOLS_KEY: ${{ secrets.APPLITOOLS_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: npx playwright test --config=configuration/playwright.config.js --project ${{ github.event.inputs.browser }}
 
       - name: Generate Allure report
