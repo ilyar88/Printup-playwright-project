@@ -30,7 +30,7 @@ jobs:
       - name: Run E2E tests
         env:
           HEADLESS: 'true'
-          URL: ${{ vars.URL }}
+          URL: ${{ secrets.URL }}
           EMAIL: ${{ secrets.EMAIL }}
           PASSWORD: ${{ secrets.PASSWORD }}
           APPLITOOLS_KEY: ${{ secrets.APPLITOOLS_KEY }}
@@ -69,4 +69,4 @@ jobs:
       - name: Run k6 load test
         uses: ./.github/actions/k6-load-test
         with:
-          base_url: ${{ vars.URL }}
+          base_url: ${{ secrets.URL }}
