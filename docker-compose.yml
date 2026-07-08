@@ -10,6 +10,8 @@ services:
       - EMAIL=${EMAIL}
       - PASSWORD=${PASSWORD}
       - APPLITOOLS_KEY=${APPLITOOLS_KEY}
+      - JENKINS_USER=${JENKINS_USER}
+      - JENKINS_PASSWORD=${JENKINS_PASSWORD}
       - CASC_JENKINS_CONFIG=/var/jenkins_config/casc.yaml
     volumes:
       - jenkins_home:/var/jenkins_home
