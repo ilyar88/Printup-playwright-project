@@ -30,10 +30,6 @@ jobs:
       - name: Run E2E tests
         env:
           HEADLESS: 'true'
-          URL: ${{ secrets.URL }}
-          EMAIL: ${{ secrets.EMAIL }}
-          PASSWORD: ${{ secrets.PASSWORD }}
-          APPLITOOLS_KEY: ${{ secrets.APPLITOOLS_KEY }}
         run: npx playwright test --config=configuration/playwright.config.js --project ${{ github.event.inputs.browser }}
 
       - name: Generate Allure report
@@ -56,7 +52,7 @@ jobs:
       - name: Trigger Jenkins pipeline
         run: |
           curl -X POST "${{ secrets.JENKINS_URL }}/job/printup/buildWithParameters" \
-            --user "${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_TOKEN }}" \
+            --user "${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_PASSWORD }}" \
             --data "BROWSER=${{ github.event.inputs.browser }}"
 
   load-test:
