@@ -158,6 +158,7 @@ Test data lives in `TDD/TestData.xlsx`, organized by sections:
 | `ContactInfoFlow` | Additional contact details |
 | `ProjectInfoFlow` | Project names, dates, urgency, file paths |
 | `MaterialsInfoFlow` | Material types, thickness, colors, textures |
+| `LayersInfoFlow` | Layer file paths, type/category, color and machine type descriptions |
 
 The `ExcelReader` parses each section by class name and returns an array of data objects.
 
@@ -185,8 +186,6 @@ The workflow (`.github/workflows/E2E test.yml`) runs via **manual dispatch** wit
 The `Jenkinsfile` defines the `printup` pipeline job (provisioned via `jenkins/casc.yaml`), parameterized by browser (chrome/firefox/edge):
 
 **Pipeline:** Install deps → install Chromium → run Playwright tests → publish Allure results & archive the report
-
-Credentials (`PRINTUP_URL`, `PRINTUP_EMAIL`, `PRINTUP_PASSWORD`, `PRINTUP_APPLITOOLS_KEY`) are injected from the Jenkins credential store.
 
 ---
 
