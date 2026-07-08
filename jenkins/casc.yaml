@@ -1,3 +1,14 @@
+jenkins:
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "${JENKINS_USER}"
+          password: "${JENKINS_PASSWORD}"
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+
 jobs:
   - script: |
       pipelineJob('printup') {
