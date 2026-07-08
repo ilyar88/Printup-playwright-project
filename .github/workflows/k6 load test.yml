@@ -16,14 +16,14 @@ on:
 jobs:
   load-test:
     runs-on: ubuntu-latest
-    environment: Configuration_settings  # supplies the URL variable
+    environment: Configuration_settings  # supplies the URL secret
     steps:
       - uses: actions/checkout@v4
 
       - name: Run k6 load test
         uses: ./.github/actions/k6-load-test
         with:
-          base_url: ${{ vars.URL }}
+          base_url: ${{ secrets.URL }}
 
   report:
     needs: load-test
