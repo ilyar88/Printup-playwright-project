@@ -28,9 +28,10 @@ class BasePage {
     }
 
     // context.close() must come before browser.close() to flush pending network requests cleanly
+    // Guarded because beforeAll may have failed before context/browser were assigned
     async closeBrowser() {
-        await this.context.close();
-        await this.browser.close();
+        if (this.context) await this.context.close();
+        if (this.browser) await this.browser.close();
     }
 
     async navigate(path = '') {
