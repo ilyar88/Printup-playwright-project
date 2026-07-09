@@ -37,3 +37,29 @@ export default function () {
 
   sleep(1);
 }
+
+// Converts the k6 summary into a single Allure test result so CI can publish an Allure report
+export function handleSummary(data) {
+  const allOk = Object.values(data.metrics)
+    .flatMap((m) => Object.values(m.thresholds || {}))
+    .every((t) => t.ok);
+
+  const now = Date.now();
+  const id = `${now}-${Math.random().toString(16).slice(2)}`;
+
+  const result = {
+    uuid: id,
+    name: 'K6 load test - PrintUp homepage',
+    status: allOk ? 'passed' : 'failed',
+    stage: 'finished',
+    start: now,
+    stop: now,
+    labels: [{ name: 'suite', value: 'Load testing' }],
+    description: JSON.stringify(data.metrics, null, 2),
+  };
+
+  return {
+    stdout: JSON.stringify(data.metrics, null, 2),
+    [`allure-results/${id}-result.json`]: JSON.stringify(result, null, 2),
+  };
+}
