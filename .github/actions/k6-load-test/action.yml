@@ -27,12 +27,14 @@ runs:
 
     - name: Run k6 load test
       shell: bash
-      run: k6 run --env BASE_URL=${{ inputs.base_url }} ${{ inputs.script }}
+      run: |
+        mkdir -p allure-results
+        k6 run --env BASE_URL=${{ inputs.base_url }} ${{ inputs.script }}
 
     - name: Generate Allure report
       if: always()  # generate report even if the load test fails
       shell: bash
-      run: npx allure generate allure-results --clean -o allure-report
+      run: npx allure-commandline@2.37.0 generate allure-results --clean -o allure-report
 
     - name: Upload Allure report
       if: always()
