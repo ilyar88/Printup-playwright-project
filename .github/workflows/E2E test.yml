@@ -79,11 +79,35 @@ jobs:
       - name: Wait for Jenkins to be ready
         run: timeout 120 bash -c 'until curl -sf http://localhost:8080/login >/dev/null; do sleep 2; done'
 
-      - name: Trigger Jenkins pipeline
+      - name: Run Jenkins pipeline and download report
+        env:
+          AUTH: ${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_PASSWORD }}
         run: |
-          curl -X POST "http://localhost:8080/job/printup/buildWithParameters" \
-            --user "${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_PASSWORD }}" \
-            --data "BROWSER=${{ github.event.inputs.browser }}"
+          QUEUE_URL=$(curl -si -X POST "http://localhost:8080/job/printup/buildWithParameters" \
+            --user "$AUTH" --data "BROWSER=${{ github.event.inputs.browser }}" \
+            | grep -i '^Location:' | tr -d '\r' | awk '{print $2}')
+
+          for i in $(seq 1 60); do
+            NUMBER=$(curl -s --user "$AUTH" "${QUEUE_URL}api/json" | jq -r '.executable.number // empty')
+            [ -n "$NUMBER" ] && break
+            sleep 5
+          done
+
+          BUILD_URL="http://localhost:8080/job/printup/$NUMBER/api/json"
+          timeout 900 bash -c "until [ \"\$(curl -s --user '$AUTH' '$BUILD_URL' | jq -r '.building')\" = 'false' ]; do sleep 5; done"
+
+          curl -sf --user "$AUTH" \
+            "http://localhost:8080/job/printup/$NUMBER/artifact/playwright-report/*zip*/playwright-report.zip" \
+            -o jenkins-playwright-report.zip
+          unzip -o jenkins-playwright-report.zip -d jenkins-playwright-report
+
+      - name: Upload Jenkins playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jenkins-playwright-report-${{ github.event.inputs.browser }}
+          path: jenkins-playwright-report/
+          retention-days: 30
 
   load-test:
     needs: test  # runs after E2E tests complete
