@@ -56,9 +56,32 @@ jobs:
     runs-on: ubuntu-latest
     environment: Configuration_settings  # supplies Jenkins credentials
     steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Jenkins image
+        run: docker build -t printup-jenkins .
+
+      - name: Run Jenkins container
+        env:
+          URL: ${{ secrets.URL }}
+          EMAIL: ${{ secrets.EMAIL }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          APPLITOOLS_KEY: ${{ secrets.APPLITOOLS_KEY }}
+          JENKINS_USER: ${{ secrets.JENKINS_USER }}
+          JENKINS_PASSWORD: ${{ secrets.JENKINS_PASSWORD }}
+        run: |
+          docker run -d --name jenkins -p 8080:8080 \
+            -e URL -e EMAIL -e PASSWORD -e APPLITOOLS_KEY -e JENKINS_USER -e JENKINS_PASSWORD \
+            -e CASC_JENKINS_CONFIG=/var/jenkins_config/casc.yaml \
+            -v "${{ github.workspace }}/jenkins/casc.yaml:/var/jenkins_config/casc.yaml" \
+            printup-jenkins
+
+      - name: Wait for Jenkins to be ready
+        run: timeout 120 bash -c 'until curl -sf http://localhost:8080/login >/dev/null; do sleep 2; done'
+
       - name: Trigger Jenkins pipeline
         run: |
-          curl -X POST "${{ secrets.JENKINS_URL }}/job/printup/buildWithParameters" \
+          curl -X POST "http://localhost:8080/job/printup/buildWithParameters" \
             --user "${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_PASSWORD }}" \
             --data "BROWSER=${{ github.event.inputs.browser }}"
 
