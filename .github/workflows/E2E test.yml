@@ -1,4 +1,4 @@
-name: Run PrintUp website tests
+name: Run PrintUp website testcases
 
 on:
   workflow_dispatch:
