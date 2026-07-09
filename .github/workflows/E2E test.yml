@@ -94,6 +94,7 @@ jobs:
             [ -n "$NUMBER" ] && break
             sleep 5
           done
+          echo "BUILD_NUMBER=$NUMBER" >> "$GITHUB_ENV"
 
           BUILD_URL="http://localhost:8080/job/printup/$NUMBER/api/json"
           timeout 1800 bash -c "until [ \"\$(curl -s --user '$AUTH' '$BUILD_URL' | jq -r '.building')\" = 'false' ]; do sleep 5; done"
@@ -110,6 +111,29 @@ jobs:
           name: jenkins-playwright-report-${{ github.event.inputs.browser }}
           path: jenkins-playwright-report/
           retention-days: 30
+
+      - name: Capture Jenkins diagnostics
+        if: failure()
+        env:
+          AUTH: ${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_PASSWORD }}
+        run: |
+          docker logs jenkins > jenkins-container.log 2>&1 || true
+          if [ -n "$BUILD_NUMBER" ]; then
+            curl -s --user "$AUTH" \
+              "http://localhost:8080/job/printup/$BUILD_NUMBER/consoleText" \
+              -o jenkins-build-console.log || true
+          fi
+
+      - name: Upload Jenkins logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jenkins-diagnostics-${{ github.event.inputs.browser }}
+          path: |
+            jenkins-container.log
+            jenkins-build-console.log
+          retention-days: 30
+          if-no-files-found: ignore
 
   load-test:
     needs: test  # runs after E2E tests complete
