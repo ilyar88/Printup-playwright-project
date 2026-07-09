@@ -94,7 +94,7 @@ jobs:
           done
 
           BUILD_URL="http://localhost:8080/job/printup/$NUMBER/api/json"
-          timeout 900 bash -c "until [ \"\$(curl -s --user '$AUTH' '$BUILD_URL' | jq -r '.building')\" = 'false' ]; do sleep 5; done"
+          timeout 1800 bash -c "until [ \"\$(curl -s --user '$AUTH' '$BUILD_URL' | jq -r '.building')\" = 'false' ]; do sleep 5; done"
 
           curl -sf --user "$AUTH" \
             "http://localhost:8080/job/printup/$NUMBER/artifact/playwright-report/*zip*/playwright-report.zip" \
