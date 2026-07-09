@@ -38,28 +38,31 @@ export default function () {
   sleep(1);
 }
 
-// Converts the k6 summary into a single Allure test result so CI can publish an Allure report
+// Converts each k6 threshold into its own Allure test case so pass/fail is clear per metric
 export function handleSummary(data) {
-  const allOk = Object.values(data.metrics)
-    .flatMap((m) => Object.values(m.thresholds || {}))
-    .every((t) => t.ok);
-
   const now = Date.now();
-  const id = `${now}-${Math.random().toString(16).slice(2)}`;
+  const files = { stdout: JSON.stringify(data.metrics, null, 2) };
 
-  const result = {
-    uuid: id,
-    name: 'K6 load test - PrintUp homepage',
-    status: allOk ? 'passed' : 'failed',
-    stage: 'finished',
-    start: now,
-    stop: now,
-    labels: [{ name: 'suite', value: 'Load testing' }],
-    description: JSON.stringify(data.metrics, null, 2),
-  };
+  for (const [metricName, metric] of Object.entries(data.metrics)) {
+    if (!metric.thresholds) continue;
 
-  return {
-    stdout: JSON.stringify(data.metrics, null, 2),
-    [`allure-results/${id}-result.json`]: JSON.stringify(result, null, 2),
-  };
+    for (const [thresholdName, thresholdResult] of Object.entries(metric.thresholds)) {
+      const id = `${now}-${Math.random().toString(16).slice(2)}`;
+
+      const result = {
+        uuid: id,
+        name: `${metricName} ${thresholdName}`,
+        status: thresholdResult.ok ? 'passed' : 'failed',
+        stage: 'finished',
+        start: now,
+        stop: now,
+        labels: [{ name: 'suite', value: 'Load testing' }],
+        description: `Threshold: ${thresholdName}\n\nValues:\n${JSON.stringify(metric.values, null, 2)}`,
+      };
+
+      files[`allure-results/${id}-result.json`] = JSON.stringify(result, null, 2);
+    }
+  }
+
+  return files;
 }

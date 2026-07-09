@@ -42,6 +42,14 @@ credentials:
               secret: "${PASSWORD}"
               description: "PrintUp Password"
           - string:
+              id: "PRINTUP_NEW_PASSWORD"
+              secret: "${NEW_PASSWORD}"
+              description: "PrintUp New Password (forgot-password flow)"
+          - string:
+              id: "PRINTUP_APP_PASSWORD"
+              secret: "${APP_PASSWORD}"
+              description: "Gmail App Password (forgot-password flow IMAP)"
+          - string:
               id: "PRINTUP_APPLITOOLS_KEY"
               secret: "${APPLITOOLS_KEY}"
               description: "Applitools Key"

@@ -9,6 +9,8 @@ pipeline {
         URL            = credentials('PRINTUP_URL')
         EMAIL          = credentials('PRINTUP_EMAIL')
         PASSWORD       = credentials('PRINTUP_PASSWORD')
+        NEW_PASSWORD   = credentials('PRINTUP_NEW_PASSWORD')
+        APP_PASSWORD   = credentials('PRINTUP_APP_PASSWORD')
         APPLITOOLS_KEY = credentials('PRINTUP_APPLITOOLS_KEY')
         HEADLESS       = 'true'
     }
