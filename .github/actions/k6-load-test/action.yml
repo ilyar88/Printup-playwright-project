@@ -29,10 +29,15 @@ runs:
       shell: bash
       run: k6 run --env BASE_URL=${{ inputs.base_url }} ${{ inputs.script }}
 
-    - name: Upload k6 results
-      if: always()  # upload even if the load test fails
+    - name: Generate Allure report
+      if: always()  # generate report even if the load test fails
+      shell: bash
+      run: npx allure generate allure-results --clean -o allure-report
+
+    - name: Upload Allure report
+      if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: k6-results
-        path: k6/
+        name: k6-allure-report
+        path: allure-report/
         retention-days: 30
