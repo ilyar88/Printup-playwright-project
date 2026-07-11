@@ -2,7 +2,18 @@
 set -e
 
 capture_diagnostics() {
+  {
+    echo "BROWSER=$BROWSER"
+    echo "QUEUE_URL=$QUEUE_URL"
+    echo "NUMBER=$NUMBER"
+  } > jenkins-debug-vars.log
+
   docker logs jenkins > jenkins-container.log 2>&1 || true
+
+  if [ -n "$QUEUE_URL" ]; then
+    curl -s --user "$AUTH" "${QUEUE_URL}api/json" -o jenkins-queue-item.json || true
+  fi
+
   if [ -n "$NUMBER" ]; then
     curl -s --user "$AUTH" \
       "http://localhost:8080/job/printup/$NUMBER/consoleText" \
