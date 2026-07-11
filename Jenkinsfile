@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        URL            = credentials('PRINTUP_URL')
+        APP_URL        = credentials('PRINTUP_URL')
         EMAIL          = credentials('PRINTUP_EMAIL')
         PASSWORD       = credentials('PRINTUP_PASSWORD')
         NEW_PASSWORD   = credentials('PRINTUP_NEW_PASSWORD')
@@ -30,7 +30,9 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh "npx rimraf allure-results && npx playwright test --config=configuration/playwright.config.js --project ${params.BROWSER}"
+                withEnv(["URL=${APP_URL}"]) {
+                    sh "npx rimraf allure-results && npx playwright test --config=configuration/playwright.config.js --project ${params.BROWSER}"
+                }
             }
         }
     }
