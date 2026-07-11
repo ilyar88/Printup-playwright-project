@@ -40,6 +40,6 @@ BUILD_URL="http://localhost:8080/job/printup/$NUMBER/api/json"
 timeout 1800 bash -c "until [ \"\$(curl -s --user '$AUTH' '$BUILD_URL' | jq -r '.building')\" = 'false' ]; do sleep 5; done"
 
 curl -sf --user "$AUTH" \
-  "http://localhost:8080/job/printup/$NUMBER/artifact/playwright-report/*zip*/playwright-report.zip" \
-  -o jenkins-playwright-report.zip
-unzip -o jenkins-playwright-report.zip -d jenkins-playwright-report
+  "http://localhost:8080/job/printup/$NUMBER/artifact/allure-report/*zip*/allure-report.zip" \
+  -o jenkins-allure-report.zip
+unzip -o jenkins-allure-report.zip -d jenkins-allure-report
