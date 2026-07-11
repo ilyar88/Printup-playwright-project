@@ -101,7 +101,9 @@ jobs:
         with:
           name: jenkins-diagnostics-${{ github.event.inputs.browser }}
           path: |
+            jenkins-debug-vars.log
             jenkins-container.log
+            jenkins-queue-item.json
             jenkins-build-console.log
           retention-days: 30
           if-no-files-found: ignore
