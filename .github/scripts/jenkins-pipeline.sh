@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -e
+
+capture_diagnostics() {
+  docker logs jenkins > jenkins-container.log 2>&1 || true
+  if [ -n "$NUMBER" ]; then
+    curl -s --user "$AUTH" \
+      "http://localhost:8080/job/printup/$NUMBER/consoleText" \
+      -o jenkins-build-console.log || true
+  fi
+}
+trap capture_diagnostics ERR
+
+CRUMB_JSON=$(curl -s --user "$AUTH" "http://localhost:8080/crumbIssuer/api/json")
+CRUMB_HEADER=$(echo "$CRUMB_JSON" | jq -r '.crumbRequestField'):$(echo "$CRUMB_JSON" | jq -r '.crumb')
+
+QUEUE_URL=$(curl -si -X POST "http://localhost:8080/job/printup/buildWithParameters" \
+  --user "$AUTH" -H "$CRUMB_HEADER" --data "BROWSER=$BROWSER" \
+  | grep -i '^Location:' | tr -d '\r' | awk '{print $2}')
+
+for i in $(seq 1 60); do
+  NUMBER=$(curl -s --user "$AUTH" "${QUEUE_URL}api/json" | jq -r '.executable.number // empty')
+  [ -n "$NUMBER" ] && break
+  sleep 5
+done
+
+BUILD_URL="http://localhost:8080/job/printup/$NUMBER/api/json"
+timeout 1800 bash -c "until [ \"\$(curl -s --user '$AUTH' '$BUILD_URL' | jq -r '.building')\" = 'false' ]; do sleep 5; done"
+
+curl -sf --user "$AUTH" \
+  "http://localhost:8080/job/printup/$NUMBER/artifact/playwright-report/*zip*/playwright-report.zip" \
+  -o jenkins-playwright-report.zip
+unzip -o jenkins-playwright-report.zip -d jenkins-playwright-report
