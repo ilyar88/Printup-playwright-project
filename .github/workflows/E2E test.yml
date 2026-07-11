@@ -84,25 +84,8 @@ jobs:
       - name: Run Jenkins pipeline and download report
         env:
           AUTH: ${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_PASSWORD }}
-        run: |
-          QUEUE_URL=$(curl -si -X POST "http://localhost:8080/job/printup/buildWithParameters" \
-            --user "$AUTH" --data "BROWSER=${{ github.event.inputs.browser }}" \
-            | grep -i '^Location:' | tr -d '\r' | awk '{print $2}')
-
-          for i in $(seq 1 60); do
-            NUMBER=$(curl -s --user "$AUTH" "${QUEUE_URL}api/json" | jq -r '.executable.number // empty')
-            [ -n "$NUMBER" ] && break
-            sleep 5
-          done
-          echo "BUILD_NUMBER=$NUMBER" >> "$GITHUB_ENV"
-
-          BUILD_URL="http://localhost:8080/job/printup/$NUMBER/api/json"
-          timeout 1800 bash -c "until [ \"\$(curl -s --user '$AUTH' '$BUILD_URL' | jq -r '.building')\" = 'false' ]; do sleep 5; done"
-
-          curl -sf --user "$AUTH" \
-            "http://localhost:8080/job/printup/$NUMBER/artifact/playwright-report/*zip*/playwright-report.zip" \
-            -o jenkins-playwright-report.zip
-          unzip -o jenkins-playwright-report.zip -d jenkins-playwright-report
+          BROWSER: ${{ github.event.inputs.browser }}
+        run: bash .github/scripts/jenkins-pipeline.sh
 
       - name: Upload Jenkins playwright report
         if: always()
@@ -111,18 +94,6 @@ jobs:
           name: jenkins-playwright-report-${{ github.event.inputs.browser }}
           path: jenkins-playwright-report/
           retention-days: 30
-
-      - name: Capture Jenkins diagnostics
-        if: failure()
-        env:
-          AUTH: ${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_PASSWORD }}
-        run: |
-          docker logs jenkins > jenkins-container.log 2>&1 || true
-          if [ -n "$BUILD_NUMBER" ]; then
-            curl -s --user "$AUTH" \
-              "http://localhost:8080/job/printup/$BUILD_NUMBER/consoleText" \
-              -o jenkins-build-console.log || true
-          fi
 
       - name: Upload Jenkins logs
         if: failure()
