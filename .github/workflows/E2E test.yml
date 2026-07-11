@@ -95,6 +95,10 @@ jobs:
           path: jenkins-playwright-report/
           retention-days: 30
 
+      - name: Capture Jenkins container logs
+        if: failure()
+        run: docker logs jenkins > jenkins-container.log 2>&1 || true
+
       - name: Upload Jenkins logs
         if: failure()
         uses: actions/upload-artifact@v4
