@@ -13,6 +13,9 @@ jenkins:
 jobs:
   - script: |
       pipelineJob('printup') {
+        parameters {
+          choiceParam('BROWSER', ['chrome', 'firefox', 'edge'], 'Browser to run tests')
+        }
         definition {
           cpsScm {
             scm {
