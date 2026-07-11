@@ -87,15 +87,15 @@ jobs:
           BROWSER: ${{ github.event.inputs.browser }}
         run: bash .github/scripts/jenkins-pipeline.sh
 
-      - name: Upload Jenkins playwright report
+      - name: Upload Jenkins allure report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: jenkins-playwright-report-${{ github.event.inputs.browser }}
-          path: jenkins-playwright-report/
+          name: jenkins-allure-report-${{ github.event.inputs.browser }}
+          path: jenkins-allure-report/
           retention-days: 30
 
-      - name: Capture Jenkins container logs
+      - name: Jenkins container logs
         if: failure()
         run: docker logs jenkins > jenkins-container.log 2>&1 || true
 
