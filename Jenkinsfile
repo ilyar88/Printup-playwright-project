@@ -40,7 +40,8 @@ pipeline {
     post {
         always {
             allure includeProperties: false, results: [[path: 'allure-results']]
-            archiveArtifacts artifacts: 'playwright-report/**', allowEmptyArchive: true
+            sh '/opt/allure/bin/allure generate allure-results --clean -o allure-report'
+            archiveArtifacts artifacts: 'allure-report/**', allowEmptyArchive: true
         }
     }
 }
