@@ -11,11 +11,12 @@ capture_diagnostics() {
 }
 trap capture_diagnostics ERR
 
-CRUMB_JSON=$(curl -s --user "$AUTH" "http://localhost:8080/crumbIssuer/api/json")
+COOKIE_JAR=$(mktemp)
+CRUMB_JSON=$(curl -s -c "$COOKIE_JAR" --user "$AUTH" "http://localhost:8080/crumbIssuer/api/json")
 CRUMB_HEADER=$(echo "$CRUMB_JSON" | jq -r '.crumbRequestField'):$(echo "$CRUMB_JSON" | jq -r '.crumb')
 
 QUEUE_URL=$(curl -si -X POST "http://localhost:8080/job/printup/buildWithParameters" \
-  --user "$AUTH" -H "$CRUMB_HEADER" --data "BROWSER=$BROWSER" \
+  --user "$AUTH" -b "$COOKIE_JAR" -H "$CRUMB_HEADER" --data "BROWSER=$BROWSER" \
   | grep -i '^Location:' | tr -d '\r' | awk '{print $2}')
 
 for i in $(seq 1 60); do
