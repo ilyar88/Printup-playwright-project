@@ -29,6 +29,12 @@ jobs:
         }
       }
 
+tool:
+  allureCommandline:
+    installations:
+      - name: "allure"
+        home: "/opt/allure/lib/node_modules/allure-commandline"
+
 credentials:
   system:
     domainCredentials:
