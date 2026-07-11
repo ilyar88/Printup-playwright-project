@@ -29,7 +29,7 @@ class SanityPage extends BasePage {
             });
 
             // Loop allows scaling to multiple data-driven iterations
-            for (let i = 0; i < ClientInfoFlow.length; i++) {
+            for (let i = 0; i < ClientInfoFlow.data.length; i++) {
                 test(`#2 Add client - iteration ${i + 1}`, async () => {
                     await allure.feature('Client info');
                     await iteration(ClientInfoFlow, this.page, i);
