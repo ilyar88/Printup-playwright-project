@@ -30,7 +30,7 @@ jobs:
       }
 
 tool:
-  allureCommandline:
+  allure:
     installations:
       - name: "allure"
         home: "/opt/allure/lib/node_modules/allure-commandline"
