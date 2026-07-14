@@ -28,14 +28,14 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run E2E tests
-        env:
-          HEADLESS: 'true'
+        env: &shared-secrets
           URL: ${{ secrets.URL }}
           EMAIL: ${{ secrets.EMAIL }}
           PASSWORD: ${{ secrets.PASSWORD }}
           NEW_PASSWORD: ${{ secrets.NEW_PASSWORD }}
           APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
           APPLITOOLS_KEY: ${{ secrets.APPLITOOLS_KEY }}
+          HEADLESS: 'true'
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: npx playwright test --config=configuration/playwright.config.js --project ${{ github.event.inputs.browser }}
 
@@ -63,12 +63,7 @@ jobs:
 
       - name: Run Jenkins container
         env:
-          URL: ${{ secrets.URL }}
-          EMAIL: ${{ secrets.EMAIL }}
-          PASSWORD: ${{ secrets.PASSWORD }}
-          NEW_PASSWORD: ${{ secrets.NEW_PASSWORD }}
-          APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
-          APPLITOOLS_KEY: ${{ secrets.APPLITOOLS_KEY }}
+          <<: *shared-secrets
           JENKINS_USER: ${{ secrets.JENKINS_USER }}
           JENKINS_PASSWORD: ${{ secrets.JENKINS_PASSWORD }}
         run: |
@@ -98,7 +93,7 @@ jobs:
       - name: Jenkins container logs
         if: failure()
         run: docker logs jenkins > jenkins-container.log 2>&1 || true
-
+        #Upload Jenkins logs when the job fails. This will help in debugging the issue.
       - name: Upload Jenkins logs
         if: failure()
         uses: actions/upload-artifact@v4
