@@ -55,6 +55,9 @@ async function waitForTime(timeText) {
     const unit = parts[1];
     let millis;
     switch (unit) {
+        case 'Milliseconds':
+            millis = value;
+            break;
         case 'Seconds':
             millis = value * 1000;
             break;
