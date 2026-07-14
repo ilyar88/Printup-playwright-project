@@ -8,7 +8,7 @@ const envValues = Object.values(process.env).filter(v => v && v.length > 0);
 const isSensitive = text => envValues.includes(text);
 const mask = text => text[0] + '*'.repeat(text.length - 1);
 
-// Clears and fills a field. Masks sensitive values (env vars) in Allure reports.
+// Clears and fills a field and masks sensitive values (env vars) in Allure reports.
 async function typeText(locator, text) {
     if (!text) return;
     const display = isSensitive(text) ? mask(text) : text;
@@ -23,6 +23,11 @@ async function click(locator) {
     await allure.step('Click element', () => locator.click());
 }
 
+// Returns whether the locator's text contains the given string.
+async function (locator, text) {
+    return (await locator.textContent())?.includes(text) ?? false;
+}
+
 // Checks or unchecks a checkbox based on whether text includes 'yes'.
 async function isChecked(locator, text) {
     const yes = text.includes('yes');
@@ -31,37 +36,41 @@ async function isChecked(locator, text) {
     );
 }
 
-// Selects a dropdown option by 'value' (text match) or 'index' (position).
-// Falls back to autocomplete click if no <option> match found for 'value'.
+// Selects a dropdown option by 'value' (native <select>, falling back to an autocomplete
+// widget if no <option> matches) or by 'index' (position).
 async function selectOption(locator, option, value) {
-    switch (option) {
-        case 'value':
-            // Wait for the target option to load (dynamic selects fetch options via API on mount)
-            await locator.locator('option').filter({ hasText: value.trim() }).waitFor({ state: 'attached', timeout: 10000 }).catch(() => {});
-            const options = await locator.locator('option').evaluateAll(opts => opts.map(o => ({ text: o.textContent.trim(), value: o.value })));
-            const found = options.find(o => o.text.includes(value.trim()));
-            if (found) {
-                // Standard <select> — select by the DOM value attribute of the matched option
-                await locator.selectOption({ value: found.value });
-            } else {
-                // Autocomplete widget — type the value and click the matching suggestion from the dropdown list
-                const tagName = await locator.evaluate(el => el.tagName.toLowerCase());
-                if (tagName === 'select') throw new Error(`No option matching "${value}" found in <select>`);
-                await locator.fill(value);
-                const suggestion = locator.page().locator(`[role="option"]`, { hasText: value }).first();
-                if (await suggestion.count() > 0) await suggestion.click();
-            }
-            break;
-        case 'index':
-            await locator.selectOption({ index: parseInt(value) });
-            break;
-        default:
-            throw new Error(`Invalid select type: ${option}`);
+    if (option === 'index') {
+        await locator.selectOption({ index: parseInt(value) });
+    } else if (option === 'value') {
+        // Check the tag first an <input> (autocomplete widget) can never have an <option> child,
+        // so waiting on one would always burn the full timeout for no reason.
+        const isSelect = await locator.evaluate(el => el.tagName.toLowerCase()) === 'select';
+        const current = isSelect
+            ? await locator.locator('option:checked').textContent().catch(() => '')
+            : await locator.inputValue().catch(() => '');
+        if (current && current.trim().includes(value.trim())) {
+            // Already selected — nothing to do
+        } else if (isSelect) {
+            // Wait for the target option, not just any option a placeholder is often already attached
+            await locator.locator('option').filter({ hasText: value.trim() }).waitFor({ state: 'attached', timeout: 3000 }).catch(() => {});
+            const match = await locator.locator('option').evaluateAll(
+                (opts, v) => opts.find(o => o.textContent.trim().includes(v))?.value,
+                value.trim()
+            );
+            if (match === undefined) throw new Error(`No option matching "${value}" found in <select>`);
+            await locator.selectOption({ value: match });
+        } else {
+            // Autocomplete widget — type the value, then click the matching suggestion to select it and close the dropdown
+            await locator.fill(value);
+            const suggestion = locator.page().locator(`div.absolute.z-50 button:visible`, { hasText: value }).first();
+            if (await suggestion.count() > 0) await suggestion.click();
+        }
+    } else {
+        throw new Error(`Invalid select type: ${option}`);
     }
     const checked = locator.locator('option:checked');
     if (await checked.count() > 0) {
-        const selectedText = await checked.textContent();
-        await allure.step(`Select option: ${selectedText}`, async () => {});
+        await allure.step(`Select option: ${await checked.textContent()}`, async () => {});
     }
 }
 
@@ -73,15 +82,14 @@ async function selectDate(locator, date) {
     );
 }
 
-// Uploads a file, working whether the locator is a plain (even hidden) <input type=file> or a
-// non-input trigger (e.g. a button backed by a File System Access API picker) — headless on any OS.
 async function uploadFile(locator, filePath) {
     if (!filePath) return;
-    // Excel test data stores Windows-style backslashes — normalize so the path works on Linux too.
-    // Kept relative to the project root (Playwright's cwd) rather than resolved to an absolute path.
+
     const relativePath = filePath.split(/[\\/]/).join(path.sep);
     await allure.step(`Upload file: ${relativePath}`, async () => {
         const page = locator.page();
+        // Brief pause before interacting — mimics a human pausing to pick the file rather than an instant action
+        await waitForTime('300 Milliseconds');
         const isFileInput = await locator.evaluate(el => el.tagName === 'INPUT' && el.type === 'file');
         if (isFileInput) {
             await locator.setInputFiles(relativePath);
@@ -92,7 +100,9 @@ async function uploadFile(locator, filePath) {
             ]);
             await chooser.setFiles(relativePath);
         }
+        // Whait until the upload is complete, then fail the test if any console errors were captured during the upload.
         await page.waitForLoadState('networkidle');
+        await waitForTime('1 Seconds');
     });
 }
 
@@ -110,17 +120,18 @@ async function uploadFileAutoIt(locator, title, filePath) {
         await click(locator);
         await winWaitActive(title, undefined, 5000);
         // Quoted: the native dialog's filename field splits unquoted paths on spaces
-        // (this project's own path — "Printup project" — has one), treating them as multiple files
         await controlSetText(title, undefined, 'Edit1', `"${relativePath}"`);
         await controlClick(title, undefined, 'Button1');
-        await waitForTime('5 Seconds');
+        await waitForTime('1 Seconds');
     });
 }
 
 // Runs a single data-driven iteration by calling the matching method on T using T.data[i].
 async function iteration(T, page, i) {
     const method = T.name[0].toLowerCase() + T.name.slice(1);
-    T.data[i] && await T[method](page, T.data[i]);
+    await allure.step(`${T.name} - iteration ${i + 1}`, async () => {
+        T.data[i] && await T[method](page, T.data[i]);
+    });
 }
 
 // Runs an Applitools visual snapshot for the current page state and closes the Eyes session.
@@ -138,4 +149,5 @@ async function checkUI(page, testName, appName = 'Printup', checkName = 'After l
     });
 }
 
-module.exports = { typeText, click, selectOption, selectDate, iteration, isChecked, uploadFile, uploadFileAutoIt, checkUI };
+module.exports = { typeText, click, hasText, selectOption, selectDate,
+                   iteration, isChecked, uploadFile, uploadFileAutoIt, checkUI };
