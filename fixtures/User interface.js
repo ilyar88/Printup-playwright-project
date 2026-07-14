@@ -24,7 +24,7 @@ async function click(locator) {
 }
 
 // Returns whether the locator's text contains the given string.
-async function (locator, text) {
+async function hasText(locator, text) {
     return (await locator.textContent())?.includes(text) ?? false;
 }
 
