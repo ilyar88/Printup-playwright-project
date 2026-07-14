@@ -14,32 +14,11 @@ class MaterialsInfo {
         return this.page.locator(`input[placeholder='${value}']`);
     }
 
+    // :visible excludes stale/hidden popups left in the DOM from a previous dropdown that
+    // wasn't fully unmounted — without it, matching text in another popup causes a strict-mode
+    // violation (multiple elements matched).
     chooseOption(value) {
-        return this.page.locator(`div.absolute.z-50 button`, { hasText: value });
-    }
-
-    // dispatchEvent('change') is required because React controlled components ignore
-    // programmatic value changes unless the synthetic change event is fired explicitly
-    async selectDropdown(placeholder, value) {
-        const input = this.dropdowns(placeholder);
-        await input.click();
-        const option = this.chooseOption(value);
-        await option.waitFor({ state: 'visible', timeout: 5000 });
-        await option.click();
-        await input.dispatchEvent('change');
-        await this.page.waitForTimeout(300);
-    }
-
-    thickness() {
-        return this.page.locator("input[type='number']");
-    }
-
-    // Both 'input' and 'change' events needed: 'input' updates React state, 'change' enables the save button
-    async fillThickness(value) {
-        const input = this.thickness();
-        await input.fill(String(value));
-        await input.dispatchEvent('input');
-        await input.dispatchEvent('change');
+        return this.page.locator(`div.absolute.z-50 button:visible`, { hasText: value });
     }
     /***
     * Yuli design
@@ -55,14 +34,16 @@ class MaterialsInfo {
         return this.page.locator("label:has(input[type='checkbox'].sr-only)");
     }
 
+    anotherName() {
+        return this.page.locator(`div.grid:has(label:text-is("שם אחר")) input`);
+    }
+
     save() {
         return this.page.locator("button[type='submit']");
     }
 
-    // <nav> has an implicit ARIA role of "navigation", which getByRole('navigation') recognizes;
-    // a [role="navigation"] CSS selector would only match if that attribute were explicitly set in the HTML
-    savedMaterial(value) {
-        return this.page.getByRole('navigation').getByRole('button', { name: value });
+    materialDetails(value) {
+        return this.page.locator(`span.flex.flex-col.items-center.text-center.leading-tight`, { hasText: value });
     }
 }
 
