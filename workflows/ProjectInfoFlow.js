@@ -16,15 +16,18 @@ class ProjectInfoFlow {
         await selectDate(projectInfo.date(), data.End_date);
         await isChecked(projectInfo.approved(), data.Final_approval);
         await selectOption(projectInfo.urgency(), 'value', data.Urgency);
-        // Excel stores time as a fraction of a day — convert to HH:MM
-        const totalMinutes = Math.round(data.Hour * 24 * 60);
-        const hh = String(Math.floor(totalMinutes / 60)).padStart(2, '0');
-        const mm = String(totalMinutes % 60).padStart(2, '0');
-        await typeText(projectInfo.time(), `${hh}:${mm}`);
+        await typeText(projectInfo.time(), ProjectInfoFlow.formatTime(data.Hour));
         await typeText(projectInfo.folderPath(), data.Project_path);
         await typeText(projectInfo.notes(), data.Notes);
         await selectOption(projectInfo.status(), 'value', data.Status_condition);
         await click(itemCenter.items('חומרים'));  // navigate to Materials panel
+    }
+    // Excel stores time as a fraction of a day — convert to HH:MM
+    static formatTime(fraction) {
+        const totalMinutes = Math.round(fraction * 24 * 60);
+        const hh = String(Math.floor(totalMinutes / 60)).padStart(2, '0');
+        const mm = String(totalMinutes % 60).padStart(2, '0');
+        return `${hh}:${mm}`;
     }
 }
 
