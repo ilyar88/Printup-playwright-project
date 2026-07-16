@@ -9,8 +9,7 @@ const { LoginFlow,
     MaterialsInfoFlow,
     LayersInfoFlow,
     ListInfoFlow } = require('../workflows');
-const { setup, teardown } = require('../fixtures/Hooks');
-const { iteration } = require('../fixtures/User interface');
+const { setup, teardown, dataProviderTest, iteration } = require('../fixtures/Hooks');
 
 // End-to-end sanity suite: login then fill each form section in order
 class SanityPage extends BasePage {
@@ -28,35 +27,35 @@ class SanityPage extends BasePage {
                 await LoginFlow.login(this.page);
             });
 
-            // Loop allows scaling to multiple data-driven iterations
-            for (let i = 0; i < ClientInfoFlow.data.length; i++) {
-                test.describe(`Iteration ${i + 1}`, () => {
-                    test(`#2 Add client - iteration ${i + 1}`, async () => {
+            // One test per ClientInfoFlow row via dataProviderTest
+            dataProviderTest(
+                async (row, i) => {
+                    await test.step(`#2 Add client - iteration ${i + 1}`, async () => {
                         await allure.feature('Client info');
                         await iteration(ClientInfoFlow, this.page, i);
                     });
-                    test(`#3 Add contact - iteration ${i + 1}`, async () => {
+                    await test.step(`#3 Add contact - iteration ${i + 1}`, async () => {
                         await allure.feature('Contact info');
                         await iteration(ContactInfoFlow, this.page, i);
                     });
-                    test(`#4 Add project - iteration ${i + 1}`, async () => {
+                    await test.step(`#4 Add project - iteration ${i + 1}`, async () => {
                         await allure.feature('Project info');
                         await iteration(ProjectInfoFlow, this.page, i);
                     });
-                    test(`#5 Add material - iteration ${i + 1}`, async () => {
+                    await test.step(`#5 Add material - iteration ${i + 1}`, async () => {
                         await allure.feature('Material info');
                         await iteration(MaterialsInfoFlow, this.page, i);
                     });
-                    test(`#6 Add layers - iteration ${i + 1}`, async () => {
+                    await test.step(`#6 Add layers - iteration ${i + 1}`, async () => {
                         await allure.feature('Layers info');
                         await iteration(LayersInfoFlow, this.page, i);
                     });
-                    test(`#7 Add list - iteration ${i + 1}`, async () => {
+                    await test.step(`#7 Add list - iteration ${i + 1}`, async () => {
                         await allure.feature('List info');
                         await iteration(ListInfoFlow, this.page, i);
                     });
-                });
-            }
+                }
+            );
 
 /*             test('#8 Reset password', async () => {
                 await allure.feature('Reset password');
