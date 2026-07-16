@@ -7,23 +7,23 @@ class Login {
     }
 
     email() {
-        return this.page.locator("input[type='email']");
+        return this.page.healingLocator("input[type='email']");
     }
 
     password() {
-        return this.page.locator("input[type='password']");
+        return this.page.healingLocator("input[type='password']");
     }
 
     forgotPassword() {
-        return this.page.locator("button[type='button']").nth(0);
+        return this.page.healingLocator("button[type='button']").nth(0);
     }
 
     login() {
-        return this.page.locator("button[type='submit']");
+        return this.page.healingLocator("button[type='submit']");
     }
 
     signup() {
-        return this.page.locator("button[type='button']").nth(1);
+        return this.page.healingLocator("button[type='button']").nth(1);
     }
 }
 
