@@ -7,55 +7,51 @@ class ProjectInfo {
     }
 
     projectEstablish() {
-        return this.page.locator("button.rounded-none").nth(0);
+        return this.page.healingLocator("button.rounded-none").nth(0);
     }
 
     customerName() {
-        return this.page.locator("select.appearance-none.cursor-pointer");
+        return this.page.healingLocator("select.appearance-none.cursor-pointer");
     }
 
     projectName() {
-        return this.page.locator("input[name='name']");
+        return this.page.healingLocator("input[name='name']");
     }
 
     subtitle() {
-        return this.page.locator("input[name='subtitle']");
+        return this.page.healingLocator("input[name='subtitle']");
     }
 
     date() {
-        return this.page.locator("input[name='endDate']");
+        return this.page.healingLocator("input[name='endDate']");
     }
 
     approved() {
-        return this.page.locator("input[type='checkbox']");
+        return this.page.healingLocator("input[type='checkbox']");
     }
 
     urgency() {
-        return this.page.locator("div:nth-child(3) > select");
+        return this.page.healingLocator("div:nth-child(3) > select");
     }
 
     time() {
-        return this.page.locator("input[type='time']");
+        return this.page.healingLocator("input[type='time']");
     }
 
     status() {
-        return this.page.locator("div.flex.items-center.justify-end > select");
+        return this.page.healingLocator("div.flex.items-center.justify-end > select");
     }
 
     folderPath() {
-        return this.page.locator("input[name='folderPath']");
+        return this.page.healingLocator("input[name='folderPath']");
     }
 
     notes() {
-        return this.page.locator("textarea[name='workNotes']");
+        return this.page.healingLocator("textarea[name='workNotes']");
     }
-    /***
-    * עבר לגרפיקה - Moved to graphics
-    * בתהליך יצור - In the production process
-    * באריזה - In the package
-    ***/
+    // Status options: עבר לגרפיקה (moved to graphics), בתהליך יצור (in production), באריזה (in package)
     async selects() {
-        return await this.page.locator("div.grid-cols-3 select").all();
+        return await this.page.healingLocator("div.grid-cols-3 select").all();
     }
 }
 
