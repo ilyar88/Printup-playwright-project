@@ -212,7 +212,7 @@ Results are uploaded as an artifact (30-day retention).
 | [Allure](https://allurereport.org/) | Test reporting |
 | [dotenv](https://www.npmjs.com/package/dotenv) | Environment variable management |
 | [GitHub Actions](https://github.com/features/actions) | CI/CD pipeline |
-| [Jenkins](https://www.jenkins.io/) | Alternate CI/CD pipeline (Jenkinsfile + Configuration-as-Code) |
+| [Jenkins](https://www.jenkins.io/) | CI/CD pipeline (Jenkinsfile + Configuration-as-Code) |
 | [Grafana k6](https://k6.io/) | Load & performance testing |
 | [Applitools Eyes](https://applitools.com/) | Visual (screenshot) regression testing |
 | [imapflow](https://www.npmjs.com/package/imapflow) | Reads reset-password emails via IMAP for the forgot-password flow |
