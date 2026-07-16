@@ -36,14 +36,12 @@ async function isChecked(locator, text) {
     );
 }
 
-// Selects a dropdown option by 'value' (native <select>, falling back to an autocomplete
-// widget if no <option> matches) or by 'index' (position).
+// Selects a dropdown option by 'value' (native <select>, falling back to an autocomplete widget) or by 'index'.
 async function selectOption(locator, option, value) {
     if (option === 'index') {
         await locator.selectOption({ index: parseInt(value) });
     } else if (option === 'value') {
-        // Check the tag first an <input> (autocomplete widget) can never have an <option> child,
-        // so waiting on one would always burn the full timeout for no reason.
+        // Check the tag first — an <input> can never have an <option> child, avoiding a wasted timeout wait
         const isSelect = await locator.evaluate(el => el.tagName.toLowerCase()) === 'select';
         const current = isSelect
             ? await locator.locator('option:checked').textContent().catch(() => '')
@@ -52,7 +50,7 @@ async function selectOption(locator, option, value) {
             // Already selected — nothing to do
         } else if (isSelect) {
             // Wait for the target option, not just any option a placeholder is often already attached
-            await locator.locator('option').filter({ hasText: value.trim() }).waitFor({ state: 'attached', timeout: 3000 }).catch(() => {});
+            await locator.locator('option').filter({ hasText: value.trim() }).waitFor({ state: 'attached', timeout: 3000 }).catch(() => { });
             const match = await locator.locator('option').evaluateAll(
                 (opts, v) => opts.find(o => o.textContent.trim().includes(v))?.value,
                 value.trim()
@@ -62,7 +60,7 @@ async function selectOption(locator, option, value) {
         } else {
             // Autocomplete widget — type the value, then click the matching suggestion to select it and close the dropdown
             await locator.fill(value);
-            const suggestion = locator.page().locator(`div.absolute.z-50 button:visible`, { hasText: value }).first();
+            const suggestion = locator.page().locator(`div button:visible`, { hasText: value }).first();
             if (await suggestion.count() > 0) await suggestion.click();
         }
     } else {
@@ -70,7 +68,7 @@ async function selectOption(locator, option, value) {
     }
     const checked = locator.locator('option:checked');
     if (await checked.count() > 0) {
-        await allure.step(`Select option: ${await checked.textContent()}`, async () => {});
+        await allure.step(`Select option: ${await checked.textContent()}`, async () => { });
     }
 }
 
@@ -100,18 +98,20 @@ async function uploadFile(locator, filePath) {
             ]);
             await chooser.setFiles(relativePath);
         }
-        // Whait until the upload is complete, then fail the test if any console errors were captured during the upload.
+        // Wait for the upload to finish settling before continuing
         await page.waitForLoadState('networkidle');
         await waitForTime('1 Seconds');
+
+        // Dismiss the app's post-upload "still uploading?" dialog if it appears, so it doesn't block the next action
+        const continueAnyway = page.locator('button', { hasText: 'המשך בכל זאת' });
+        if (await continueAnyway.count() > 0) await continueAnyway.click();
     });
 }
 
-// Uploads a file through a native OS dialog using AutoIt. Waits for the dialog by title, types the path, and clicks Open.
-// Waits for network idle to confirm upload completed, then fails the test if any console errors were captured during the upload.
+// Uploads via a native OS file dialog (AutoIt): opens the dialog, types the path, clicks Open.
 async function uploadFileAutoIt(locator, title, filePath) {
     if (!filePath) return;
-    // Loaded lazily: this native AutoIt binding is Windows-only and would crash the
-    // whole module (and test collection) on load if required at file scope on Linux CI.
+    // Loaded lazily — this Windows-only binding would crash module load on Linux CI if required at file scope
     const { init, winWaitActive, controlSetText, controlClick } = require('node-autoit-koffi');
     // Excel test data stores Windows-style backslashes — normalize so the path works on Linux too
     const relativePath = filePath.split(/[\\/]/).join(path.sep);
@@ -126,14 +126,6 @@ async function uploadFileAutoIt(locator, title, filePath) {
     });
 }
 
-// Runs a single data-driven iteration by calling the matching method on T using T.data[i].
-async function iteration(T, page, i) {
-    const method = T.name[0].toLowerCase() + T.name.slice(1);
-    await allure.step(`${T.name} - iteration ${i + 1}`, async () => {
-        T.data[i] && await T[method](page, T.data[i]);
-    });
-}
-
 // Runs an Applitools visual snapshot for the current page state and closes the Eyes session.
 async function checkUI(page, testName, appName = 'Printup', checkName = 'After login') {
     await allure.step('Applitools visual check', async () => {
@@ -144,10 +136,12 @@ async function checkUI(page, testName, appName = 'Printup', checkName = 'After l
         eyes.setHostApp(`Chrome ${page.context().browser().version()}`);
         await eyes.open(page, appName, testName, { width: screenSize.width, height: screenSize.height });
         await eyes.check(checkName, Target.window());
-        await eyes.close().catch(() => {});
+        await eyes.close().catch(() => { });
         await page.setViewportSize(screenSize);
     });
 }
 
-module.exports = { typeText, click, hasText, selectOption, selectDate,
-                   iteration, isChecked, uploadFile, uploadFileAutoIt, checkUI };
+module.exports = {
+    typeText, click, hasText, selectOption, selectDate,
+    isChecked, uploadFile, uploadFileAutoIt, checkUI
+};
