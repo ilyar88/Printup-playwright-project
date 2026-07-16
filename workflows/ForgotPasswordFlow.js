@@ -1,7 +1,7 @@
+const { expect } = require('@playwright/test');
 const Login = require('../pageObjects/Login');
 const resetPassword = require('../pageObjects/ResetPassword');
 const { typeText, click, checkUI } = require('../fixtures/User interface');
-const { verifyEquals } = require('../fixtures/Assert');
 const { ImapFlow } = require('imapflow');
 const BasePage = require('../base/BasePage');
 
@@ -13,15 +13,13 @@ class ForgotPasswordFlow {
         await click(loginPage.login());
         const resetPage = await ForgotPasswordFlow.getResetPasswordUrl(page);
         const resetPasswordPage = new resetPassword(resetPage);
-        const title = await resetPage.title();
-        verifyEquals(title, 'Client');
+        await expect(resetPage).toHaveTitle('Client');
         await typeText(resetPasswordPage.password(), process.env.NEW_PASSWORD);
         await typeText(resetPasswordPage.confirmPassword(), process.env.NEW_PASSWORD);
         await click(resetPasswordPage.resetPassword());
         await resetPage.close();
         await new BasePage(page).navigate();
-        title = await page.title();
-        verifyEquals(title, 'PrintUP test');
+        await expect(page).toHaveTitle('PrintUP test');
     }
 
     static async getResetPasswordUrl(page) {
