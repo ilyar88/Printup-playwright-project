@@ -10,12 +10,11 @@ End-to-end test automation suite for the PrintUp web application, built with **P
 Printup project/
 ├── base/                        
 │   ├── BasePage.js              # Browser lifecycle & navigation
-│   ├── SelfHealing.js           # Proxies page.locator(); on failure triggers AriaHealer and patches the source file via AST rewrite
-│   └── AriaHealer.js            # Core AI engine: collects POM/flow context, reads Playwright ARIA snapshot, and calls Claude to find a replacement CSS selector
+│   ├── SelfHealing.js           # healingLocator(page, selector), called explicitly by page objects; on failure runs the MCP agent loop (McpTools.js) to find and use a replacement selector, then patches the source file via AST rewrite
+│   └── McpTools.js              # In-process MCP server exposing the live page as tools (get_snapshot, check_selector, perform_action, report_dom_issue)
 ├── configuration/
 │   └── playwright.config.js     # Playwright & browser config
 ├── fixtures/                    # Reusable test utilities
-│   ├── Assert.js                # Assertion helpers with Allure steps
 │   ├── Hooks.js                 # Setup, teardown & screenshot on failure
 │   ├── User interface.js        # UI interactions (click, type, select, check and upload file)
 │   └── Wait.js                  # Wait conditions & synchronization
@@ -43,8 +42,8 @@ Printup project/
 ├── Suite/                       # Test specs
 │   └── SanityTest.spec.js       # Main sanity E2E suite
 ├── TDD/                         # Test data
-│   ├── ExcelReader.js           # Excel parser utility
-│   └── TestData.xlsx            # Data-driven test data
+│   ├── JsonReader.js            # JSON test data reader utility
+│   └── TestData.json            # Data-driven test data
 ├── Matirals/                    # Upload test files (SVGs)
 ├── k6/
 │   └── loadTest.js              # k6 load test: ramp-up/hold/ramp-down stages with p95 response-time and error-rate thresholds
@@ -73,8 +72,8 @@ Printup project/
 | **Workflows** | Multi-step user flows (login, add client, add project, etc.) |
 | **Page Objects** | Encapsulate UI element locators per page |
 | **Fixtures** | Reusable utilities: assertions, UI actions, waits, hooks |
-| **TDD** | Excel-driven test data parsed by ExcelReader |
-| **Base** | `BasePage` handles browser launch, navigation, and config access. `SelfHealing` wraps every `page.locator()` call if a selector fails, it sends the broken selector and Playwright ARIA snapshot to Claude and retries with the AI-suggested replacement, then writes the fix back into the page object file |
+| **TDD** | JSON-driven test data read by JsonReader |
+| **Base** | `BasePage` handles browser launch, navigation, and config access. `SelfHealing` exposes `healingLocator(page, selector)`, called explicitly by page objects instead of `page.locator()`; if a selector fails, an MCP tool-using AI agent inspects the live page, finds and uses a replacement, then writes the fix back into the page object file |
 
 ---
 
@@ -160,7 +159,7 @@ Test data lives in `TDD/TestData.xlsx`, organized by sections:
 | `MaterialsInfoFlow` | Material types, thickness, colors, textures |
 | `LayersInfoFlow` | Layer file paths, type/category, color and machine type descriptions |
 
-The `ExcelReader` parses each section by class name and returns an array of data objects.
+The `JsonReader` looks up each section by class name and returns an array of data objects.
 
 ---
 
