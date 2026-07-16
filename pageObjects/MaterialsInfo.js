@@ -5,45 +5,39 @@ class MaterialsInfo {
     constructor(page) {
         this.page = page;
     }
-  
+
     upload() {
-        return this.page.locator("input[type='file']");
+        return this.page.healingLocator("input[type='file']");
     }
 
     dropdowns(value) {
-        return this.page.locator(`input[placeholder='${value}']`);
+        return this.page.healingLocator(`input[placeholder='${value}']`);
     }
 
-    // :visible excludes stale/hidden popups left in the DOM from a previous dropdown that
-    // wasn't fully unmounted — without it, matching text in another popup causes a strict-mode
-    // violation (multiple elements matched).
+    // :visible avoids matching a stale/hidden popup left over from a previous dropdown
+    // (otherwise a leftover match causes a strict-mode violation — multiple elements matched)
     chooseOption(value) {
-        return this.page.locator(`div.absolute.z-50 button:visible`, { hasText: value });
+        return this.page.healingLocator(`div.absolute.z-50 button:visible`, { hasText: value });
     }
-    /***
-    * Yuli design
-    * רשימה B
-    * קטוגריה A
-    * לפי החומר
-    ***/
+    // Category tab values: לפי החומר, קטוגריה A, רשימה B, Yuli design
     categoryMaterials(value) {
-        return this.page.locator(`.flex-row-reverse button`, { hasText: value });
+        return this.page.healingLocator(`.flex-row-reverse button`, { hasText: value });
     }
 
     keepPermanent() {
-        return this.page.locator("label:has(input[type='checkbox'].sr-only)");
+        return this.page.healingLocator("label:has(input[type='checkbox'].sr-only)");
     }
 
     anotherName() {
-        return this.page.locator(`div.grid:has(label:text-is("שם אחר")) input`);
+        return this.page.healingLocator(`div.grid:has(label:text-is("שם אחר")) input`);
     }
 
     save() {
-        return this.page.locator("button[type='submit']");
+        return this.page.healingLocator("button[type='submit']");
     }
 
     materialDetails(value) {
-        return this.page.locator(`span.flex.flex-col.items-center.text-center.leading-tight`, { hasText: value });
+        return this.page.healingLocator(`span.flex.flex-col.items-center.text-center.leading-tight`, { hasText: value });
     }
 }
 
