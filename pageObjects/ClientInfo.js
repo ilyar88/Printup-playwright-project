@@ -7,58 +7,51 @@ class ClientInfo {
     }
 
     newCustomer() {
-        return this.page.locator("header > div > button.inline-flex");
+        return this.page.healingLocator("header > div > button.inline-flex");
     }
 
      clientName() {
-        return this.page.locator("input[name='name']");
+        return this.page.healingLocator("input[name='name']");
     }
 
     editorName() {
-        return this.page.locator("input[name='editorName']");
+        return this.page.healingLocator("input[name='editorName']");
     }
 
     contactName() {
-        return this.page.locator("input[name='contact.person']");
+        return this.page.healingLocator("input[name='contact.person']");
     }
 
     phoneNumber() {
-        return this.page.locator("input[name='contact.phone']");
+        return this.page.healingLocator("input[name='contact.phone']");
     }
 
     email() {
-        return this.page.locator("input[name='contact.email']");
+        return this.page.healingLocator("input[name='contact.email']");
     }
-    /***
-    * מס טל' ראשי - Main phone number
-    * אימייל - Email
-    ***/
+    // Includes: מס טל' ראשי (main phone), אימייל (email)
     checkboxes() {
         return this.page.getByRole('checkbox');
     }
 
     role() {
-        return this.page.locator("input[name='contact.role']");
+        return this.page.healingLocator("input[name='contact.role']");
     }
 
     notes() {
-        return this.page.locator("textarea[name='notes']");
+        return this.page.healingLocator("textarea[name='notes']");
     }
-    /***
-    * פרטים נוספים - More Details
-    * כתובת למשלוח - Shipping Address
-    * הגדרת תשלומות - Payment Settings
-    ***/
+    // Button labels: פרטים נוספים (more details), כתובת למשלוח (shipping address), הגדרת תשלומות (payment settings)
     async buttons() {
-        return await this.page.locator("button.inline-flex[type='button']").all();
+        return await this.page.healingLocator("button.inline-flex[type='button']").all();
     }
 
     addIcon() {
-        return this.page.locator("button[type='button'].font-medium.text-primary");
+        return this.page.healingLocator("button[type='button'].font-medium.text-primary");
     }
 
     addContact() {
-        return this.page.locator("button.border-dashed");
+        return this.page.healingLocator("button.border-dashed");
     }
 
     nextButton() {
@@ -66,7 +59,7 @@ class ClientInfo {
     }
 
     back() {
-        return this.page.locator("div.border-t.border-white > div > button");
+        return this.page.healingLocator("div.border-t.border-white > div > button");
     }
 }
 
