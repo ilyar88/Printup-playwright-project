@@ -210,7 +210,6 @@ Results are uploaded as an artifact (30-day retention).
 |------|---------|
 | [Playwright](https://playwright.dev/) | Browser automation & test runner |
 | [Allure](https://allurereport.org/) | Test reporting |
-| [xlsx](https://www.npmjs.com/package/xlsx) | Excel data parsing |
 | [dotenv](https://www.npmjs.com/package/dotenv) | Environment variable management |
 | [GitHub Actions](https://github.com/features/actions) | CI/CD pipeline |
 | [Jenkins](https://www.jenkins.io/) | Alternate CI/CD pipeline (Jenkinsfile + Configuration-as-Code) |
@@ -218,4 +217,4 @@ Results are uploaded as an artifact (30-day retention).
 | [Applitools Eyes](https://applitools.com/) | Visual (screenshot) regression testing |
 | [imapflow](https://www.npmjs.com/package/imapflow) | Reads reset-password emails via IMAP for the forgot-password flow |
 | [node-autoit-koffi](https://www.npmjs.com/package/node-autoit-koffi) | Drives native Windows file-upload dialogs |
-| [Anthropic Claude](https://www.anthropic.com/) | AI self-healing finds replacement selectors via ARIA snapshot |
+| [Anthropic Claude](https://www.anthropic.com/) | AI self-healing agent finds replacement selectors via MCP tools (`McpTools.js`: get_snapshot, check_selector, perform_action) |
