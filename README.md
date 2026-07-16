@@ -15,7 +15,8 @@ Printup project/
 ├── configuration/
 │   └── playwright.config.js     # Playwright & browser config
 ├── fixtures/                    # Reusable test utilities
-│   ├── Hooks.js                 # Setup, teardown & screenshot on failure
+│   ├── Assert.js                # Assertion helpers (verifyEquals, verifyText, isDisplayed, verifyTextSoft, assertFailed)
+│   ├── Hooks.js                 # Setup, teardown, screenshot on failure & data-driven test helpers (dataProviderTest, readJson, iteration)
 │   ├── User interface.js        # UI interactions (click, type, select, check and upload file)
 │   └── Wait.js                  # Wait conditions & synchronization
 ├── pageObjects/                 # Page Object Model (POM)
@@ -42,8 +43,7 @@ Printup project/
 ├── Suite/                       # Test specs
 │   └── SanityTest.spec.js       # Main sanity E2E suite
 ├── TDD/                         # Test data
-│   ├── JsonReader.js            # JSON test data reader utility
-│   └── TestData.json            # Data-driven test data
+│   └── TestData.json            # Data-driven test data, read via readJson()/dataProviderTest() in Hooks.js
 ├── Matirals/                    # Upload test files (SVGs)
 ├── k6/
 │   └── loadTest.js              # k6 load test: ramp-up/hold/ramp-down stages with p95 response-time and error-rate thresholds
@@ -72,7 +72,7 @@ Printup project/
 | **Workflows** | Multi-step user flows (login, add client, add project, etc.) |
 | **Page Objects** | Encapsulate UI element locators per page |
 | **Fixtures** | Reusable utilities: assertions, UI actions, waits, hooks |
-| **TDD** | JSON-driven test data read by JsonReader |
+| **TDD** | JSON-driven test data read via `readJson()` in Hooks.js |
 | **Base** | `BasePage` handles browser launch, navigation, and config access. `SelfHealing` exposes `healingLocator(page, selector)`, called explicitly by page objects instead of `page.locator()`; if a selector fails, an MCP tool-using AI agent inspects the live page, finds and uses a replacement, then writes the fix back into the page object file |
 
 ---
@@ -85,7 +85,7 @@ Tests run **serially** since each step depends on the previous:
 #1 Login  -->  #2 Add Client  -->  #3 Add Contact  -->  #4 Add Project  -->  #5 Add Material  --> #6 LayersInfoFlow  --> #7 ListInfoFlow
 ```
 
-Each workflow reads its data from `TestData.xlsx` and supports multiple iterations.
+Each workflow reads its data from `TestData.json` and supports multiple iterations.
 
 ---
 
@@ -149,7 +149,7 @@ Saved to `screenshots/{YYYY-MM-DD}/{testTitle}.png` and attached to the Allure r
 
 ## Data-Driven testing
 
-Test data lives in `TDD/TestData.xlsx`, organized by sections:
+Test data lives in `TDD/TestData.json`, organized by sections:
 
 | Section | Description |
 |---------|-------------|
@@ -159,7 +159,7 @@ Test data lives in `TDD/TestData.xlsx`, organized by sections:
 | `MaterialsInfoFlow` | Material types, thickness, colors, textures |
 | `LayersInfoFlow` | Layer file paths, type/category, color and machine type descriptions |
 
-The `JsonReader` looks up each section by class name and returns an array of data objects.
+The `readJson` helper (in `fixtures/Hooks.js`) looks up each section by class name and returns an array of data objects.
 
 ---
 
