@@ -7,27 +7,27 @@ class ContactInfo {
     }
 
     fullName() {
-        return this.page.locator("input[name='contacts.0.name']");
+        return this.page.healingLocator("input[name='contacts.0.name']");
     }
 
     phoneNumber() {
-        return this.page.locator("input[name='contacts.0.phone']");
+        return this.page.healingLocator("input[name='contacts.0.phone']");
     }
 
     email() {
-        return this.page.locator("input[name='contacts.0.email']");
+        return this.page.healingLocator("input[name='contacts.0.email']");
     }
 
     role() {
-        return this.page.locator("input[name='contacts.0.role']");
+        return this.page.healingLocator("input[name='contacts.0.role']");
     }
 
     notes() {
-        return this.page.locator("textarea[name='contacts.0.notes']");
+        return this.page.healingLocator("textarea[name='contacts.0.notes']");
     }
 
     nextButton() {
-        return this.page.locator("span.group.relative.inline-flex > button");
+        return this.page.healingLocator("span.group.relative.inline-flex > button");
     }
 }
 
