@@ -1,11 +1,13 @@
 const { chromium } = require('@playwright/test');
 const { config } = require('../configuration/playwright.config');
-const { wrapPage } = require('./SelfHealing');
+const { healingLocator } = require('./SelfHealing');
 
 class BasePage {
 
     constructor(page) {
-        this.page = wrapPage(page);  // wraps page with self-healing proxy
+        this.page = page;
+        // Attached once here — page objects call this.page.healingLocator(...) instead of importing it themselves
+        if (page) page.healingLocator = (selector, options) => healingLocator(page, selector, options);
         this.baseUrl = config.baseUrl;
     }
 
@@ -41,6 +43,7 @@ class BasePage {
     // Opens a second tab in an existing context — used for flows that require comparing two pages
     static async openNewTab(context, url) {
         const newPage = await context.newPage();
+        newPage.healingLocator = (selector, options) => healingLocator(newPage, selector, options);
         await newPage.goto(url);
         return newPage;
     }
