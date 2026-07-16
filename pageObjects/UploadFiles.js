@@ -7,27 +7,27 @@ class UploadFiles {
     }
 
     uploadFile() {
-        return this.page.locator("div.overflow-auto > div > div > button");
+        return this.page.healingLocator("div.overflow-auto > div > div > button");
     }
 
     designFiles() {
-        return this.page.locator("button.border-\\[\\#5a8aa8\\].bg-white");
+        return this.page.healingLocator("button.border-\\[\\#5a8aa8\\].bg-white");
     }
 
     projectFiles() {
-        return this.page.locator("button[type='button']").nth(0);
+        return this.page.healingLocator("button[type='button']").nth(0);
     }
 
     workOrder() {
-        return this.page.locator("button[type='submit']");
+        return this.page.healingLocator("button[type='submit']");
     }
 
     projectArchive() {
-        return this.page.locator("button[type='button']").nth(1);
+        return this.page.healingLocator("button[type='button']").nth(1);
     }
 
     addProject() {
-        return this.page.locator("button.text-primary.font-light");
+        return this.page.healingLocator("button.text-primary.font-light");
     }
 }
 
