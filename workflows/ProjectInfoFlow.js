@@ -1,10 +1,10 @@
 const ProjectInfo = require('../pageObjects/ProjectInfo');
 const ItemCenter = require('../pageObjects/ItemCenter');
 const { typeText, click, selectOption, selectDate, isChecked } = require('../fixtures/User interface');
-const { readExcel } = require('../TDD/ExcelReader');
+const { readJson } = require('../fixtures/Hooks');
 
 class ProjectInfoFlow {
-    static data = readExcel('ProjectInfoFlow');
+    static data = readJson('ProjectInfoFlow');
 
     static async projectInfoFlow(page, data) {
         const projectInfo = new ProjectInfo(page);
@@ -22,7 +22,7 @@ class ProjectInfoFlow {
         await selectOption(projectInfo.status(), 'value', data.Status_condition);
         await click(itemCenter.items('חומרים'));  // navigate to Materials panel
     }
-    // Excel stores time as a fraction of a day — convert to HH:MM
+    // Stored as a fraction of a day (from the original spreadsheet) — convert to HH:MM
     static formatTime(fraction) {
         const totalMinutes = Math.round(fraction * 24 * 60);
         const hh = String(Math.floor(totalMinutes / 60)).padStart(2, '0');
