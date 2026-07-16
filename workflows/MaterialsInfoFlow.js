@@ -1,10 +1,10 @@
-const { expect } = require('@playwright/test');
 const MaterialsInfo = require('../pageObjects/MaterialsInfo');
 const LayersInfo = require('../pageObjects/LayersInfo');
 const ItemCenter = require('../pageObjects/ItemCenter');
 const Wait = require("../fixtures/Wait");
 const { click, isChecked, typeText, uploadFile, selectOption, hasText } = require('../fixtures/User interface');
 const { readJson } = require('../fixtures/Hooks');
+const { verifyText } = require('../fixtures/Assert');
 
 // Automates the Materials Info page by uploading a file, selecting material options, and saving.
 class MaterialsInfoFlow {
@@ -43,7 +43,7 @@ class MaterialsInfoFlow {
             [data.Texture_material],
             [data.Material_type_2],
         ]) {
-            await expect(layersInfo.layerOptions(value)).toHaveText(value);
+            verifyText(await layersInfo.layerOptions(value).textContent(), value);
         }
     }
 }
