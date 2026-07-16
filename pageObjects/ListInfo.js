@@ -7,27 +7,23 @@ class ListInfo {
     }
 
     options(value) {
-        return this.page.locator("div.overflow-visible[dir='ltr'] > :is(button, div)", { hasText: value });
+        return this.page.healingLocator("div.overflow-visible[dir='ltr'] > :is(button, div)", { hasText: value });
     }
 
     columnNames(value) {
-        return this.page.locator(`tr.border-b > th:has([title="${value}"])`);
+        return this.page.healingLocator(`tr.border-b > th:has([title="${value}"])`);
     }
 
     displayItems(value) {
-        return this.page.locator("td.text-center", { hasText: value });
+        return this.page.healingLocator("td.text-center", { hasText: value });
     }
 
     exportSheet() { //יצא גליון
-        return this.page.locator("button[type='button'].rounded-lg");
+        return this.page.healingLocator("button[type='button'].rounded-lg");
     }
-    /***
-    * הדפסה
-    * שכבות
-    * תצוגה
-    ***/
+    // Icon values: הדפסה (print), שכבות (layers), תצוגה (view)
     icons(value) {
-        return this.page.locator("div.items-center > button.items-center > svg[stroke='currentColor']", { hasText: value });
+        return this.page.healingLocator("div.items-center > button.items-center > svg[stroke='currentColor']", { hasText: value });
     }
 }
 
