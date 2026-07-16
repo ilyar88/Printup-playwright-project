@@ -1,8 +1,7 @@
 const { expect } = require('@playwright/test');
 const { allure } = require('allure-playwright');
-const { verifyText, assertFailed } = require('./Assert');
 
-// Waits for a locator state by name — supports ELEMENT_EXISTS, ELEMENT_DISPLAYED, ELEMENT_INVISIBLE, ELEMENT_CLICKABLE
+// Waits for a locator state (EXISTS/DISPLAYED/INVISIBLE/CLICKABLE)
 async function waitFor(locator, forElement, seconds) {
     const timeout = seconds * 1000;
     switch (For.parse(forElement)) {
@@ -27,24 +26,12 @@ async function waitFor(locator, forElement, seconds) {
 
 async function waitForListSize(locator, size, seconds) {
     const timeout = seconds * 1000;
-    try {
-        await expect(locator).toHaveCount(size, { timeout });
-    } catch (e) {
-        // Report actual count instead of a raw Playwright timeout error
-        const count = await locator.count();
-        assertFailed(`Expected list size >= ${size} but found ${count}`);
-    }
+    await expect(locator, `Expected list size to be ${size}`).toHaveCount(size, { timeout });
 }
 
 async function waitUntilUrlContains(page, uri) {
     await allure.step(`Wait for uri: ${uri}`, async () => {
-        try {
-            await expect(page).toHaveURL(new RegExp(uri), { timeout: 5000 });
-        } catch (e) {
-            // Fallback to a soft text assertion so the failure message shows the actual URL
-            const actual = page.url();
-            verifyText(actual, uri);
-        }
+        await expect(page, `Expected URL to contain: ${uri}`).toHaveURL(new RegExp(uri), { timeout: 5000 });
     });
 }
 
