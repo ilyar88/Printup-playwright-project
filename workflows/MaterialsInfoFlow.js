@@ -1,17 +1,16 @@
+const { expect } = require('@playwright/test');
 const MaterialsInfo = require('../pageObjects/MaterialsInfo');
 const LayersInfo = require('../pageObjects/LayersInfo');
 const ItemCenter = require('../pageObjects/ItemCenter');
-const Assert = require('../fixtures/Assert');
 const Wait = require("../fixtures/Wait");
 const { click, isChecked, typeText, uploadFile, selectOption, hasText } = require('../fixtures/User interface');
-const { readExcel } = require('../TDD/ExcelReader');
+const { readJson } = require('../fixtures/Hooks');
 
 // Automates the Materials Info page by uploading a file, selecting material options, and saving.
 class MaterialsInfoFlow {
-    static data = readExcel('MaterialsInfoFlow');
+    static data = readJson('MaterialsInfoFlow');
 
-    // Uploads a project file, selects material dropdowns (type, thickness, color, texture),
-    // picks a category, toggles "keep permanent", saves, and navigates to the next page.
+    // Uploads a file, sets material dropdowns, toggles "keep permanent", saves, and moves to the next page.
     static async materialsInfoFlow(page, data) {
         const materialsInfo = new MaterialsInfo(page);
         const layersInfo = new LayersInfo(page);
@@ -44,7 +43,7 @@ class MaterialsInfoFlow {
             [data.Texture_material],
             [data.Material_type_2],
         ]) {
-            Assert.verifyEquals(await layersInfo.layerOptions(value).textContent(), value);
+            await expect(layersInfo.layerOptions(value)).toHaveText(value);
         }
     }
 }
