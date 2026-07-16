@@ -31,4 +31,23 @@ function teardown(page) {
     });
 }
 
-module.exports = { setup, teardown };
+// get the length of the data from the TestData.json.
+function dataProviderTest(testFn) {
+    const data = Object.values(require('../TDD/TestData.json'))[0];
+    data.forEach((row, i) => test(`Iteration ${i + 1} - ${row.name_surname}`, () => testFn(row, i)));
+}
+
+// Returns the pre-loaded test data rows for a given class name.
+function readJson(className) {
+    return require('../TDD/TestData.json')[className] ?? [];
+}
+
+// Runs a single data-driven iteration by calling the matching method on T using T.data[i].
+async function iteration(T, page, i) {
+    const method = T.name[0].toLowerCase() + T.name.slice(1);
+    await allure.step(`${T.name} - iteration ${i + 1}`, async () => {
+        T.data[i] && await T[method](page, T.data[i]);
+    });
+}
+
+module.exports = { setup, teardown, dataProviderTest, readJson, iteration };
