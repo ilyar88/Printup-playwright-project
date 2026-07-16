@@ -1,0 +1,233 @@
+{
+  "ClientInfoFlow": [
+    {
+      "name_surname": "אורלי שלו",
+      "editor_name": "Orly Shalev",
+      "main_phone_number": "0542222222- yes",
+      "email": "orly.shalo@gmail.com - yes",
+      "notes": "Printing on 9mm plexiglass only",
+      "role": "מנהלי ייצור"
+    },
+    {
+      "name_surname": "יוסי כהן",
+      "editor_name": "Yossi Cohen",
+      "main_phone_number": "0547891234 - no",
+      "email": "yossi.cohen@gmail.com - no",
+      "notes": "Printing on 3mm double-sided Alucobond",
+      "role": "מעצב דפוס"
+    },
+    {
+      "name_surname": "מיכל לוי",
+      "editor_name": "Michal Levi",
+      "main_phone_number": "0523456789 - yes",
+      "email": "michal.levi@gmail.com - no",
+      "notes": "Check color matching against the source file before printing",
+      "role": "מנהל פרויקט"
+    },
+    {
+      "name_surname": "דנה אברהם",
+      "editor_name": "Dana Abraham",
+      "main_phone_number": "0509876543 - no",
+      "email": "dana.avraham@gmail.com",
+      "notes": "Make sure to print on 5mm white rigid PVC",
+      "role": "טכנאי דפוס"
+    },
+    {
+      "name_surname": "רותם שרביט",
+      "editor_name": "Rotem Sharvit",
+      "main_phone_number": "0582345678 - yes",
+      "email": "rotem.sharvit@gmail.com",
+      "notes": "Printing on a 10mm cap for temporary display",
+      "role": "טכנאי דפוס"
+    }
+  ],
+  "ContactInfoFlow": [
+    {
+      "fullName": "יולי כהן",
+      "Main_phone_number": "547781234 - no",
+      "Email": "yuli.cohen@gmail.com",
+      "Role": "בעלים",
+      "Notes": "לקוח VIP, לתאם מראש"
+    },
+    {
+      "fullName": "רותם עזרא",
+      "Main_phone_number": "523345678 - yes",
+      "Email": "rotem.ezra@yahoo.com",
+      "Role": "מנהל פרויקט",
+      "Notes": "אחראי על פרויקטי שילוט"
+    },
+    {
+      "fullName": "אחמד נסרי",
+      "Main_phone_number": "509912345 - no",
+      "Email": "ahmed.nasri@hotmail.com",
+      "Role": "מעצב גרפי",
+      "Notes": "עובד בימי א-ה בלבד"
+    },
+    {
+      "fullName": "שושנה לוי",
+      "Main_phone_number": "586628020 - yes",
+      "Email": "shoshana.levi@gmail.com",
+      "Role": "הנהלת חשבונות",
+      "Notes": "לשלוח חשבוניות במייל"
+    },
+    {
+      "fullName": "דניאל ברק",
+      "Main_phone_number": "534456789 - no",
+      "Email": "daniel.barak@outlook.com",
+      "Role": "מנהל ייצור",
+      "Notes": "לתאם זמני הדפסה מראש"
+    }
+  ],
+  "ListInfoFlow": [],
+  "LayersInfoFlow": [
+    {
+      "Layers_path": "Materials\\1695195183wooden-texture.svg",
+      "Description": "צבע,צבע",
+      "index": 0,
+      "Type": "הדפסה,הדפסה"
+    },
+    {
+      "Layers_path": "Materials\\BackgroundPattern237Colour5.svg",
+      "Description": "צורני,CNC,צמוד",
+      "index": 0,
+      "Type": "חיתוך,חיתוך"
+    },
+    {
+      "Layers_path": "Materials\\FruitPattern2.svg",
+      "Description": "צבע,גוון לבן",
+      "index": 1,
+      "Type": "צלבים,צלבים"
+    },
+    {
+      "Layers_path": "Materials\\texturelegno.svg",
+      "Description": "צבע,גוון שחור",
+      "index": 2,
+      "Type": "טקסט,טקסט"
+    },
+    {
+      "Layers_path": "Materials\\Wooden-texture-geometry-seamless-pattern-remix.svg",
+      "Description": "צורני,גוון אפור",
+      "index": 0,
+      "Type": "הדפסה,חיתוך"
+    }
+  ],
+  "MaterialsInfoFlow": [
+    {
+      "Material_type": "פרספקס",
+      "Thickness_mm": 8,
+      "Color": "לבן",
+      "Texture_material": "שקוף",
+      "Material_type_2": "פולט אור",
+      "Category_materials": "YULI DESIGN",
+      "Another_name": "פרספקס לבן מבריק",
+      "Keep_in_system": "yes",
+      "Material_path": "Materials\\1695195183wooden-texture.svg"
+    },
+    {
+      "Material_type": "PVC",
+      "Thickness_mm": 4,
+      "Color": "שחור",
+      "Texture_material": "לבן",
+      "Material_type_2": "מלוטש",
+      "Category_materials": "רשימה B",
+      "Another_name": "ACM כסוף",
+      "Keep_in_system": "yes",
+      "Material_path": "Materials\\BackgroundPattern237Colour5.svg"
+    },
+    {
+      "Material_type": "אלומיניום",
+      "Thickness_mm": 6,
+      "Color": "כסף",
+      "Texture_material": "מט",
+      "Material_type_2": "אט",
+      "Category_materials": "קטגוריה A",
+      "Another_name": "פולט אור שחור",
+      "Keep_in_system": "yes",
+      "Material_path": "Materials\\FruitPattern2.svg"
+    },
+    {
+      "Material_type": "פוליפלסט",
+      "Thickness_mm": 6,
+      "Color": "זהב",
+      "Texture_material": "מבריק",
+      "Material_type_2": "פולט אור",
+      "Category_materials": "לפי חומר",
+      "Another_name": "פרספקס שקוף 6 מ\"מ",
+      "Keep_in_system": "yes",
+      "Material_path": "Materials\\texturelegno.svg"
+    },
+    {
+      "Material_type": "אקריל",
+      "Thickness_mm": 2,
+      "Color": "שקוף",
+      "Texture_material": "חלבי",
+      "Material_type_2": "מלוטש",
+      "Category_materials": "Yuli design",
+      "Another_name": "מדבקת ויניל מט",
+      "Keep_in_system": "yes",
+      "Material_path": "Materials\\Wooden-texture-geometry-seamless-pattern-remix.svg"
+    }
+  ],
+  "ProjectInfoFlow": [
+    {
+      "Project_path": "Materials\\1695195183wooden-texture.svg",
+      "name_surname": "אורלי שלו",
+      "Project_name": "פריסת גיליונות",
+      "Subtitle": "סידור אלמנטים על משטח 120",
+      "End_date": "15.4.2026",
+      "Final_approval": "yes",
+      "Urgency": "רגיל",
+      "Hour": 0.3333333333333333,
+      "Status_condition": "ממתין אישור לקוח",
+      "Notes": "לוודא מרווחים של 4 מ\"מ בין אלמנטים"
+    },
+    {
+      "Project_path": "Materials\\BackgroundPattern237Colour5.svg",
+      "name_surname": "יוסי כהן",
+      "Project_name": "חיתוך צורני",
+      "Subtitle": "קווי חיתוך לפרספקס שקוף 9 מ\"מ",
+      "End_date": "22.3.2026",
+      "Final_approval": "no",
+      "Urgency": "דחוף",
+      "Hour": 0.4375,
+      "Status_condition": "הקפאה/בהמתנה",
+      "Notes": "חיתוך כרסום בלבד, לא קווי"
+    },
+    {
+      "Project_path": "Materials\\FruitPattern2.svg",
+      "name_surname": "מיכל לוי",
+      "Project_name": "הדפסת שכבות",
+      "Subtitle": "הדפסה וצלבים על אלוקובונד לבן",
+      "End_date": "30.3.2026",
+      "Final_approval": "yes",
+      "Urgency": "בהול",
+      "Hour": 0.5416666666666666,
+      "Status_condition": "בוטל",
+      "Notes": "שכבת לבן ב-50% שקיפות לבדיקה"
+    },
+    {
+      "Project_path": "Materials\\texturelegno.svg",
+      "name_surname": "דנה אברהם",
+      "Project_name": "סידור לוחות",
+      "Subtitle": "VPC פריסה אוטומטית למדבקות",
+      "End_date": "8.4.2026",
+      "Final_approval": "no",
+      "Urgency": "רגיל",
+      "Hour": 0.6458333333333334,
+      "Status_condition": "תקלה/תיקון",
+      "Notes": "הלקוח ביקש כיוון אנכי בלבד"
+    },
+    {
+      "Project_path": "Materials\\Wooden-texture-geometry-seamless-pattern-remix.svg",
+      "name_surname": "רותם שרביט",
+      "Project_name": "ריצת דפוס",
+      "Subtitle": "הפקת גליונות הדפסה וחיתוך",
+      "End_date": "17.4.2026",
+      "Final_approval": "yes",
+      "Urgency": "דחוף",
+      "Hour": 0.375,
+      "Status_condition": "ייצור חוזר",
+      "Notes": "דחוף - לתאם אישור לקוח לפני הדפסה"
+    }
+  ]
+}
