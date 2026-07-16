@@ -7,19 +7,19 @@ class ResetPassword {
     }
 
     password() {
-        return this.page.locator("input[id='password']");
+        return this.page.healingLocator("input[id='password']");
     }
 
     confirmPassword() {
-        return this.page.locator("input[id='confirmPassword']");
+        return this.page.healingLocator("input[id='confirmPassword']");
     }
 
     resetPassword() {
-        return this.page.locator("button[type='submit']");
+        return this.page.healingLocator("button[type='submit']");
     }
 
     backToLogin() {
-        return this.page.locator("button[type='button']");
+        return this.page.healingLocator("button[type='button']");
     }
 }
 
